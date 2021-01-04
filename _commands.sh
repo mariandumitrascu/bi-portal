@@ -36,7 +36,7 @@ find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
 git init
 git add .
 git commit -m "first commit"
-git remote add origin https://github.com/mariandumitrascu/sample-site-django3.git
+git remote add origin https://github.com/mariandumitrascu/bi-portal.git
 git branch -M main
 git push -u origin main
 
@@ -45,54 +45,29 @@ git push -u origin main
 git branch -M main
 git push -u origin main
 
-##################################################################################################
-eb init -p python-3.6 flask-demo --region us-east-1
-eb init
-
-##################################################################################################
-eb create flask-env
-eb open
-
-##################################################################################################
-eb status
-
-##################################################################################################
-eb deploy
-
-##################################################################################################
-eb terminate --force
-
-
-# ec2
-ec2-3-95-29-190.compute-1.amazonaws.com
-
-ssh -i /Users/marian.dumitrascu/Dropbox/Work/current/hudi/aws-hudi-demo/key-pairs/md-labs-key-pair.pem ec2-user@ec2-3-95-29-190.compute-1.amazonaws.com
-ssh -i /Users/marian.dumitrascu/Dropbox/Work/current/hudi/aws-hudi-demo/key-pairs/md-labs-key-pair.pem root@ec2-3-95-29-190.compute-1.amazonaws.com
-
-# the app was deployed:
-/opt/python/bundle/2/app/application.py
-
-# configure ssl for beanstack
-# https://colintoh.com/blog/configure-ssl-for-aws-elastic-beanstalk
 
 ####################################################################################################
 # django
-
+pip install --upgrade pip
 pip install django
+pip install pillow
+pip install django-widget-tweaks
+
 python -m django --version
 # 3.1.4
-django-admin startproject mysite
+django-admin startproject mainsite
 
-cd /Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/sample-site-django3/mysite
+cd /Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/mainsite
 
 python manage.py migrate
-python manage.py startapp polls
+python manage.py startapp biportal
+
 
 ########################################################################################
 python manage.py createsuperuser
 
-python ./mysite/manage.py runserver 8989
-python manage.py runserver 8989
+python ./mainsite/manage.py runserver 8888
+python manage.py runserver 8888
 
 ########################################################################################
 # polls app
@@ -151,9 +126,9 @@ exit()
 ##############################################################################################################
 ##############################################################################################################
 # beginers guide
-cd /Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/sample-site-django3/mysite
+cd /Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/mainsite
 python manage.py startapp boards
-python manage.py runserver 8989
+python manage.py runserver 8888
 
 pip install Markdown
 pip install django-widget-tweaks
