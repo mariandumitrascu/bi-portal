@@ -52,6 +52,17 @@ pip install --upgrade pip
 pip install django
 pip install pillow
 pip install django-widget-tweaks
+pip install django-taggit
+pip install django-debug-toolbar
+
+# reference
+# https://django-bootstrap3.readthedocs.io/en/latest/installation.html
+# https://django-bootstrap4.readthedocs.io/en/latest/installation.html
+# https://github.com/zostera/django-bootstrap3
+pip install django-bootstrap4
+pip uninstall django-bootstrap4
+
+pip install django-bootstrap3
 
 python -m django --version
 # 3.1.4
@@ -144,3 +155,26 @@ npm install --global htmlhint
 #####################################################
 # accounts
 python manage.py startapp accounts
+
+
+##############################################################################################################
+##############################################################################################################
+##############################################################################################################
+python manage.py makemigrations biportal
+python manage.py migrate
+python manage.py runserver 8888
+
+##############################################################################################################
+##############################################################################################################
+##############################################################################################################
+pip install isort
+
+# check which files will be sorted
+isort --recursive --check-only .
+isort .
+
+##############################################################################################################
+##############################################################################################################
+##############################################################################################################
+# accounts
+python manage.py makemigrations accounts

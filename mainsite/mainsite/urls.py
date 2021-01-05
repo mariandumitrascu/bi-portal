@@ -14,17 +14,28 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path
 from django.contrib.auth import views as auth_views
+from django.urls import include, path
+from django.conf import settings
 
 from biportal import views
 
+
 urlpatterns = [
-    path('',            views.home, name='temp_home'),
+    path('',            views.HomePage.as_view(), name='home'),
     path('bip/',        include('biportal.urls')),
+    path('accounts/',   include('accounts.urls', namespace='accounts')),
+    path('accounts/',   include('django.contrib.auth.urls')),
     path('admin/',      admin.site.urls),
 ]
 
 admin.sites.AdminSite.site_header = 'Guardian BI Portal admin'
 admin.sites.AdminSite.site_title = 'Guardian BI Portal'
 
+
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls))
+    ] + urlpatterns
