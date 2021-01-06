@@ -178,3 +178,7 @@ isort .
 ##############################################################################################################
 # accounts
 python manage.py makemigrations accounts
+
+python manage.py startapp pptlayouts
+python manage.py makemigrations pptlayouts
+python manage.py migrate

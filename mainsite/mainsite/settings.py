@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'taggit',
 
     'biportal.apps.BiportalConfig',
+    'pptlayouts.apps.PptlayoutsConfig',
     'accounts',
 ]
 
