@@ -8,10 +8,8 @@
 # reference eb w django
 # https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create-deploy-python-django.html
 
-# IP Address	98.199.135.8
-# Hostname	c-98-199-135-8.hsd1.tx.comcast.net
-
-
+# github repo:
+# https://github.com/mariandumitrascu/bi-portal
 
 pip install virtualenv
 # For Mac
@@ -181,4 +179,15 @@ python manage.py makemigrations accounts
 
 python manage.py startapp pptlayouts
 python manage.py makemigrations pptlayouts
+python manage.py migrate
+
+
+#############################################################################################################
+#############################################################################################################
+#############################################################################################################
+# reset the db
+find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+find . -path "*/migrations/*.pyc"  -delete
+find . -path "*/db.sqlite3"  -delete
+python manage.py makemigrations
 python manage.py migrate

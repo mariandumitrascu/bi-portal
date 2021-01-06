@@ -257,3 +257,4 @@ prod*
 *.zip
 *.code-workspace
 
+_commands.sh
