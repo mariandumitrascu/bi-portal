@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Presentation, Bipage, Snippet
+from .models import Presentation, Bipage, Snippet, MasterLayout
 
 # Register your models here.
 
@@ -45,3 +45,4 @@ class PresentationAdmin(admin.ModelAdmin):
 
 # admin.site.register(Presentation)
 admin.site.register(Snippet)
+# admin.site.register(MasterLayout)
