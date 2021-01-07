@@ -1,19 +1,28 @@
 from django.contrib import admin
 from .models import Presentation, Bipage, Snippet
+from django.utils.html import mark_safe
 
-# Register your models here.
+from sorl.thumbnail.admin import AdminImageMixin
+
+# references:
+# for sorl.thumbnail: https://sorl-thumbnail.readthedocs.io/en/latest/examples.html
+
 
 
 # class BipageInline(admin.StackedInline):
 class BipageInline(admin.TabularInline):
     model = Bipage
     show_change_link = True
-    fields = ['name', 'last_updated']
-    readonly_fields = ['last_updated']
-    list_display = ['name', 'last_updated']
+    fields = ['image_slidepage_preview', 'name', 'last_updated']
+    readonly_fields = ['last_updated', 'image_slidepage_preview']
+    list_display = ['image_slidepage_preview','name', 'last_updated']
 
     # prepopulated_fields = {"name": ("",)}
-    extra = 3
+    extra = 1
+
+    def image_slidepage_preview(self, obj):
+        return mark_safe("<img src='/static/biportal/img/SlidePage.png' />")
+
 
 @admin.register(Presentation)
 class PresentationAdmin(admin.ModelAdmin):
@@ -57,8 +66,11 @@ class PresentationAdmin(admin.ModelAdmin):
 ###################################################################################################
 ###################################################################################################
 @admin.register(Snippet)
+# class SnippetAdmin(AdminImageMixin, admin.ModelAdmin):
 class SnippetAdmin(admin.ModelAdmin):
-    readonly_fields = ['created_at']
+    readonly_fields = ['created_at', 'image_cropped_preview']
+
+    list_filter = ['tags', 'created_by', 'created_at']
 
     fieldsets = [
         (
@@ -70,7 +82,9 @@ class SnippetAdmin(admin.ModelAdmin):
         (
             'Snippet Image',
             {
-                'fields': ['image_rendered', 'image_cropped']
+                'fields': [
+                    'image_rendered',
+                    ('image_cropped', 'image_cropped_preview')]
             }
         ),
         (
@@ -89,9 +103,53 @@ class SnippetAdmin(admin.ModelAdmin):
         ),
     ]
 
-    list_display = ['name', 'created_by', 'created_at','updated_at']
+    list_display = ['image_cropped_preview', 'name', 'created_by', 'created_at','updated_at']
 
-    list_per_page = 5
+    search_fields = ['name', 'created_at', 'tags']
+
+    list_per_page = 3
+
+    # reference:
+    # https://ilovedjango.com/django/admin/how-to-show-image-from-imagefield-in-django-admin-page/
+    def image_cropped_preview(self, obj):
+        return mark_safe("<img src={url} width={width} height={height} />".format(
+            url = obj.image_cropped.url,
+            width=obj.image_cropped.width,
+            height=obj.image_cropped.height
+            ))
+
+    def image_rendered_preview(self, obj):
+        return mark_safe("<img src={url} width={width} height={height} />".format(
+            url = obj.image_rendered.url,
+            width=obj.image_rendered.width,
+            height=obj.image_rendered.height
+            ))
+
+
+    # default created_by user with curent user
+    # overwrite get_changeform_initial_data
+    def get_changeform_initial_data(self, request):
+        get_data = super(SnippetAdmin, self).get_changeform_initial_data(request)
+        get_data['created_by'] = request.user.pk
+        return get_data
+
+
+    # reference:
+    # https://docs.djangoproject.com/en/3.1/topics/forms/modelforms/
+    # https://stackoverflow.com/questions/4670783/make-the-user-in-a-model-default-to-the-current-user
+    # every time you save a form using commit=False, Django adds a save_m2m()
+    # method to your ModelForm subclass. After you’ve manually saved the instance
+    # produced by the form, you can invoke save_m2m()
+    # to save the many-to-many form data. For example:
+    def save_model(self, request, instance, form, change):
+        user = request.user
+        instance = form.save(commit=False)
+        if not change or not instance.created_by:
+            instance.created_by = user
+        instance.updated_by = user
+        instance.save()
+        form.save_m2m()
+        return instance
 
 # admin.site.register(Presentation)
 # admin.site.register(Snippet)

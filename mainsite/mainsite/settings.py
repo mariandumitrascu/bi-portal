@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'bootstrap3',
     'widget_tweaks',
     'taggit',
+    'sorl.thumbnail',
 
     'biportal.apps.BiportalConfig',
     'pptlayouts.apps.PptlayoutsConfig',

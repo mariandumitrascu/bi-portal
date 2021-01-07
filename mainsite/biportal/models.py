@@ -6,8 +6,14 @@ from django.utils.html import mark_safe
 from django.utils.text import Truncator
 from taggit.managers import TaggableManager
 from django.utils import timezone
+from django.utils.html import format_html
 
-# Create your models here.
+from PIL import Image
+from sorl.thumbnail import get_thumbnail
+from sorl.thumbnail import ImageField
+
+# references:
+# for sorl.thumbnail: https://sorl-thumbnail.readthedocs.io/en/latest/examples.html
 
 
 
@@ -106,28 +112,45 @@ class Snippet(models.Model):
     image_rendered = models.ImageField(
         upload_to='image_rendered/',
         verbose_name='Rendered Report',
-        null = True
+        null = True,
+        blank = True
         )
 
-    image_cropped = models.ImageField(
+    # using sorl.thumbnail.ImageField
+    image_cropped = ImageField(
         upload_to='image_cropped/',
         verbose_name='Report Snippet',
-        null = True
+        null = True,
+        blank = True
         )
 
-    x = models.PositiveIntegerField(
+    @property
+    def image_cropped_preview(self):
+        if self.image_cropped:
+            _image_cropped = get_thumbnail(self.thumbnail,
+                                #    '300x300',
+                                   upscale=False,
+                                   crop=False,
+                                   quality=100)
+            return format_html('<img src="{}" width="{}" height="{}">'.format(
+                _image_cropped.url, _image_cropped.width, _image_cropped.height)
+                )
+        return ""
+
+
+    x = models.FloatField(
         default=0
         )
 
-    y = models.PositiveIntegerField(
+    y = models.FloatField(
         default=0
         )
 
-    w = models.PositiveIntegerField(
+    w = models.FloatField(
         default=0
         )
 
-    h = models.PositiveIntegerField(
+    h = models.FloatField(
         default=0
         )
 
@@ -157,10 +180,21 @@ class Snippet(models.Model):
     # will be available as bipage.pages_set and snippet.bipages
     pages = models.ManyToManyField(Bipage)
 
-    tags = TaggableManager()
+    tags = TaggableManager(
+        blank = True
+        )
 
     def __str__(self):
         return self.name
+
+    # overwritting save
+    def save(self, *args, **kwargs):
+            super().save(*args, **kwargs)
+            img = Image.open(self.image_cropped.path)
+            # output_size = (125, 125)
+            # img.thumbnail(output_size)
+            # img.save(self.image.path)
+
 
     class Meta:
         verbose_name = 'snippet'

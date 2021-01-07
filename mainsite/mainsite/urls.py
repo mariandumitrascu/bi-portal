@@ -18,15 +18,16 @@ from django.contrib.auth import views as auth_views
 from django.urls import include, path
 from django.conf import settings
 
+
 from biportal import views
 
 
 urlpatterns = [
-    path('',            views.HomePage.as_view(), name='home'),
-    path('bip/',        include('biportal.urls')),
-    path('accounts/',   include('accounts.urls', namespace='accounts')),
+    path('',            views.HomePage.as_view(),           name='home'),
+    path('bip/',        include('biportal.urls',            namespace='biportal')),
+    path('accounts/',   include('accounts.urls',            namespace='accounts')),
     path('accounts/',   include('django.contrib.auth.urls')),
-    path('admin/',      admin.site.urls),
+    path('admin/',      admin.site.urls,                    name='admin'),
 ]
 
 admin.sites.AdminSite.site_header = 'Guardian BI Portal admin'
@@ -35,7 +36,12 @@ admin.sites.AdminSite.site_title = 'Guardian BI Portal'
 
 if settings.DEBUG:
     import debug_toolbar
+    from django.conf.urls.static import static
 
     urlpatterns = [
         path('__debug__/', include(debug_toolbar.urls))
     ] + urlpatterns
+
+    # reference:
+    # simple-image-crop project
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
