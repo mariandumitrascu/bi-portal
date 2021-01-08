@@ -42,7 +42,8 @@ class PPTPageLayoutInline(admin.TabularInline):
         # return format_html(u'<a href="{}">Edit</a>', url)
         # # … or if you want to include other fields:
         # return format_html(u'<a href="{}">Edit: {}</a>', '/admin/bipage', instance.title)
-        return format_html(u'<a href="{}">Edit</a>', '/admin/pptlayouts/pptpagelayout/1')
+        # return format_html(u'<a href="{}">Edit</a>', '/admin/pptlayouts/pptpagelayout/1')
+        return format_html(u'<a href="/admin/pptlayouts/pptpagelayout/{}/change/">Edit</a>', instance.pk)
 
 
 
@@ -102,3 +103,33 @@ class PPTMasterLayoutAdmin(admin.ModelAdmin):
 
 
 # admin.site.register(PPTPageLayout)
+@admin.register(PPTPageLayout)
+class PPTPageLayouAdmin(admin.ModelAdmin):
+    # model = PPTPageLayout
+
+    fields = ['name', 'master_layout', 'web_page_layout', 'image_thumbnail_preview',  ]
+
+    readonly_fields = ['image_thumbnail_preview']
+
+    list_display = ['image_thumbnail_preview', 'name', 'master_layout', 'web_page_layout']
+
+    # extra = 1
+
+    def image_thumbnail_preview(self, obj):
+        # return mark_safe("<img src='{}' />".format(self.image_thumbnail.url))
+        # return mark_safe("<img src='/static/biportal/slides/layout1.png' />")
+        # return mark_safe("<img src='/static/biportal/slides/layout{}.png' />".format(obj.pk))
+        return mark_safe("<img src={} />".format(
+            obj.image_thumbnail.url,
+            # self.image_thumbnail.width,
+            # self.image_thumbnail.height,
+        ))
+
+    def edit(self, instance):
+        # url = reverse('admin:bipage'
+        # return format_html(u'<a href="{}">Edit</a>', url)
+        # # … or if you want to include other fields:
+        # return format_html(u'<a href="{}">Edit: {}</a>', '/admin/bipage', instance.title)
+        # return format_html(u'<a href="{}">Edit</a>', '/admin/pptlayouts/pptpagelayout/1')
+        return format_html(u'<a href="/admin/pptlayouts/pptpagelayout/{}/change/">Edit</a>', instance.pk)
+

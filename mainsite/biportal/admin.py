@@ -100,9 +100,10 @@ class SnippetAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SnippetAdminForm, self).__init__(*args, **kwargs)
 
-        self.fields['embedded'].label = 'Embedded report'
+        self.fields['embedded'].label = 'Embedded report code'
         self.fields['embedded'].widget = forms.Textarea(attrs={'cols': '80', 'rows': '3'})
 
+        # self.fields['report_rendered_preview'].label = 'Rendered report'
     class Meta:
         model = Snippet
         fields = '__all__'
@@ -114,7 +115,9 @@ class SnippetAdmin(admin.ModelAdmin):
 
     form = SnippetAdminForm
 
-    readonly_fields = ['created_at', 'image_cropped_preview']
+    ordering = ('created_at',)
+
+    readonly_fields = ['created_at','report_rendered_preview', 'report_snippet_preview']
 
     list_filter = ['tags', 'created_by', 'created_at']
 
@@ -128,9 +131,14 @@ class SnippetAdmin(admin.ModelAdmin):
         (
             'Snippet Image',
             {
-                'fields': [
-                    'image_rendered',
-                    ('image_cropped', 'image_cropped_preview')]
+                'fields':
+                [
+                    ('report_rendered_preview', 'image_rendered'),
+                    # ('image_cropped', 'image_cropped_full_preview')
+                    # 'image_cropped',
+                    # 'image_cropped_full_preview'
+                    ('report_snippet_preview', 'image_cropped',)
+                ]
             }
         ),
         (
@@ -153,15 +161,28 @@ class SnippetAdmin(admin.ModelAdmin):
 
     search_fields = ['name', 'created_at']
 
-    list_per_page = 3
+    list_per_page = 5
 
     # reference:
     # https://ilovedjango.com/django/admin/how-to-show-image-from-imagefield-in-django-admin-page/
-    def image_cropped_preview(self, obj):
+    def report_rendered_preview(self, obj):
+        return mark_safe("<img src={url} width={width} height={height} />".format(
+            url = obj.image_rendered.url,
+            width=obj.image_rendered.width,
+            height=obj.image_rendered.height
+            ))
+    # report_rendered_preview.short_description = 'sfasdfsff'
+    report_rendered_preview.label = 'sfasdfsff'
+
+    def report_snippet_preview(self, obj):
         return mark_safe("<img src={url} width={width} height={height} />".format(
             url = obj.image_cropped.url,
             width=obj.image_cropped.width,
             height=obj.image_cropped.height
+            ))
+    def image_cropped_preview(self, obj):
+        return mark_safe("<img src={url} width=220 />".format(
+            url = obj.image_cropped.url,
             ))
 
     def image_rendered_preview(self, obj):
