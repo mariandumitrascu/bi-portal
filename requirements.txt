@@ -8,5 +8,6 @@ django-widget-tweaks==1.4.8
 isort==5.7.0
 Pillow==8.1.0
 pytz==2020.5
+sorl-thumbnail==12.7.0
 soupsieve==2.1
 sqlparse==0.4.1
