@@ -19,7 +19,6 @@ ppt_master_choices = [
     ('master1', 'Guardian Master PPT'),
 ]
 
-
 ###########################################################################################################
 class Presentation(models.Model):
     name = models.CharField(
@@ -45,7 +44,6 @@ class Presentation(models.Model):
         default = 'master1',
         verbose_name = 'PPT Master Layout'
         )
-
 
     created_by = models.ForeignKey(
         User,

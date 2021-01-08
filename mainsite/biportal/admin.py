@@ -1,10 +1,12 @@
 from django.contrib import admin
-from .models import Presentation, Bipage, Snippet
 from django.utils.html import mark_safe
 from django.urls import reverse
 from django.utils.html import format_html
+from django import forms
 
 from sorl.thumbnail.admin import AdminImageMixin
+
+from .models import Presentation, Bipage, Snippet
 
 # references:
 # for sorl.thumbnail: https://sorl-thumbnail.readthedocs.io/en/latest/examples.html
@@ -37,10 +39,24 @@ class BipageInline(admin.TabularInline):
         # return format_html(u'<a href="{}">Edit: {}</a>', '/admin/bipage', instance.title)
         return format_html(u'<a href="{}">Edit</a>', '/admin/bipage')
 
+
+###########################################################################################################
+
+class PresentatioAdminForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(PresentatioAdminForm, self).__init__(*args, **kwargs)
+
+        # self.fields['embedded'].label = 'Embedded report'
+        self.fields['description'].widget = forms.Textarea(attrs={'cols': '40', 'rows': '10'})
+
+    class Meta:
+        model = Presentation
+        fields = '__all__'
+
 @admin.register(Presentation)
 class PresentationAdmin(admin.ModelAdmin):
 
-    # fields = ['name', 'description', 'active', 'created_by', 'tags']
+    form = PresentatioAdminForm
 
     readonly_fields = ['created_at']
 
@@ -78,9 +94,26 @@ class PresentationAdmin(admin.ModelAdmin):
 ###################################################################################################
 ###################################################################################################
 ###################################################################################################
+
+
+class SnippetAdminForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SnippetAdminForm, self).__init__(*args, **kwargs)
+
+        self.fields['embedded'].label = 'Embedded report'
+        self.fields['embedded'].widget = forms.Textarea(attrs={'cols': '80', 'rows': '3'})
+
+    class Meta:
+        model = Snippet
+        fields = '__all__'
+
+##################################################################################################
 @admin.register(Snippet)
 # class SnippetAdmin(AdminImageMixin, admin.ModelAdmin):
 class SnippetAdmin(admin.ModelAdmin):
+
+    form = SnippetAdminForm
+
     readonly_fields = ['created_at', 'image_cropped_preview']
 
     list_filter = ['tags', 'created_by', 'created_at']
@@ -118,7 +151,7 @@ class SnippetAdmin(admin.ModelAdmin):
 
     list_display = ['image_cropped_preview', 'name', 'created_by', 'created_at','updated_at']
 
-    search_fields = ['name', 'created_at', 'tags']
+    search_fields = ['name', 'created_at']
 
     list_per_page = 3
 
