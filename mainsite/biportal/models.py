@@ -15,6 +15,9 @@ from sorl.thumbnail import ImageField
 # references:
 # for sorl.thumbnail: https://sorl-thumbnail.readthedocs.io/en/latest/examples.html
 
+ppt_master_choices = [
+    ('master1', 'Guardian Master PPT'),
+]
 
 
 ###########################################################################################################
@@ -33,6 +36,16 @@ class Presentation(models.Model):
     # pages = models.PositiveIntegerField(
     #     editable=False
     #     )
+
+    ppt_master_file = models.CharField(
+        max_length = 20,
+        null = True,
+        blank = True,
+        choices = ppt_master_choices,
+        default = 'master1',
+        verbose_name = 'PPT Master Layout'
+        )
+
 
     created_by = models.ForeignKey(
         User,
@@ -74,9 +87,23 @@ class Presentation(models.Model):
         ordering = ["-created_at"]
 
 ###########################################################################################################
+ppt_page_layout_choices = [
+    ('header', 'Header Page'),
+    ('content1', 'Content With 1 Placeholder'),
+    ('content2', 'Content With 2 Columns'),
+]
 class Bipage(models.Model):
     name = models.CharField(
         max_length=30,
+        )
+
+    ppt_page_layout = models.CharField(
+        max_length = 20,
+        null = True,
+        blank = True,
+        choices = ppt_page_layout_choices,
+        default = 'content1',
+        verbose_name = 'PPT Page Layout'
         )
 
     presentation = models.ForeignKey(

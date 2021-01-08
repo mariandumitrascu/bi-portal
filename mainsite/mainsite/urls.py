@@ -26,11 +26,11 @@ urlpatterns = [
     path('',            views.HomePage.as_view(),           name='home'),
     path('bip/',        include('biportal.urls',            namespace='biportal')),
     path('accounts/',   include('accounts.urls',            namespace='accounts')),
-    path('accounts/',   include('django.contrib.auth.urls')),
+    path('accounts/',   include('django.contrib.auth.urls'                      )),
     path('admin/',      admin.site.urls,                    name='admin'),
 ]
 
-admin.sites.AdminSite.site_header = 'Guardian BI Portal admin'
+admin.sites.AdminSite.site_header = 'Guardian Report Rendering Portal'
 admin.sites.AdminSite.site_title = 'Guardian BI Portal'
 
 

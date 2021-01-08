@@ -1,6 +1,8 @@
 from django.contrib import admin
 from .models import Presentation, Bipage, Snippet
 from django.utils.html import mark_safe
+from django.urls import reverse
+from django.utils.html import format_html
 
 from sorl.thumbnail.admin import AdminImageMixin
 
@@ -13,16 +15,27 @@ from sorl.thumbnail.admin import AdminImageMixin
 class BipageInline(admin.TabularInline):
     model = Bipage
     show_change_link = True
-    fields = ['image_slidepage_preview', 'name', 'last_updated']
-    readonly_fields = ['last_updated', 'image_slidepage_preview']
-    list_display = ['image_slidepage_preview','name', 'last_updated']
+    fields = ['image_slidepage_preview', 'name', 'ppt_page_layout', 'last_updated', 'edit']
+    readonly_fields = ['last_updated', 'image_slidepage_preview', 'edit']
+    list_display = ['image_slidepage_preview', 'name', 'ppt_page_layout', 'last_updated']
+    can_delete = True
 
     # prepopulated_fields = {"name": ("",)}
     extra = 1
 
+    list_per_page = 5
+
+    per_page = 5
+
     def image_slidepage_preview(self, obj):
         return mark_safe("<img src='/static/biportal/img/SlidePage.png' />")
 
+    def edit(self, instance):
+        # url = reverse('admin:bipage'
+        # return format_html(u'<a href="{}">Edit</a>', url)
+        # # … or if you want to include other fields:
+        # return format_html(u'<a href="{}">Edit: {}</a>', '/admin/bipage', instance.title)
+        return format_html(u'<a href="{}">Edit</a>', '/admin/bipage')
 
 @admin.register(Presentation)
 class PresentationAdmin(admin.ModelAdmin):
@@ -35,7 +48,7 @@ class PresentationAdmin(admin.ModelAdmin):
         (
             'Basic Information',
             {
-                'fields': ['name', 'description', 'active']
+                'fields': ['name', 'description', 'ppt_master_file', 'active']
             }
         ),
 
