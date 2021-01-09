@@ -44,10 +44,12 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'taggit',
     'sorl.thumbnail',
+    'crispy_forms',
 
     'biportal.apps.BiportalConfig',
     'pptlayouts.apps.PptlayoutsConfig',
     'accounts',
+
 ]
 
 MIDDLEWARE = [
@@ -137,8 +139,13 @@ STATICFILES_DIRS = (
 )
 
 MEDIA_URL = '/media/'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 TAGGIT_CASE_INSENSITIVE = True
 
 INTERNAL_IPS = ['127.0.0.1']
+
+X_FRAME_OPTIONS = 'ALLOW'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

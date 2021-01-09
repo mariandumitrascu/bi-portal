@@ -7,6 +7,7 @@
     <p class="deletelink-box"><a href="{% add_preserved_filters delete_url %}" class="deletelink">{% translate "Delete" %}</a></p>
 {% endif %}
 <a href="../"><input type="button" name="Cancel" value="Cancel"></a>
+{% if show_render_all_report_snippets %}<input type="submit" value="{% translate 'Render all snippet reports in Pages' %}" name="_render_snippets">{% endif %}
 {% if show_save_as_new %}<input type="submit" value="{% translate 'Save as new' %}" name="_saveasnew">{% endif %}
 {% if show_save_and_add_another %}<input type="submit" value="{% translate 'Save and add another' %}" name="_addanother">{% endif %}
 {% if show_save_and_continue %}<input type="submit" value="{% if can_change %}{% translate 'Save and continue editing' %}{% else %}{% translate 'Save and view' %}{% endif %}" name="_continue">{% endif %}
