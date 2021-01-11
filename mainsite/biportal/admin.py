@@ -1,9 +1,16 @@
+import os, time, uuid
+from urllib.parse import quote as urlquote
+
 from django.contrib import admin
 from django.utils.html import mark_safe
 from django.urls import reverse
 from django.utils.html import format_html
 from django import forms
 from django.http import HttpResponseRedirect
+from django.contrib import messages
+from django.core.files import File
+from django.utils.translation import gettext as _, ngettext
+from django.conf import settings
 
 from sorl.thumbnail.admin import AdminImageMixin
 
@@ -162,7 +169,7 @@ class SnippetAdmin(admin.ModelAdmin):
 
     ordering = ('created_at',)
 
-    readonly_fields = ['created_at','report_rendered_preview', 'report_snippet_preview']
+    readonly_fields = ['created_at','report_rendered_preview', 'report_snippet_preview', 'render_button']
 
     list_filter = ['tags', 'created_by', 'created_at']
 
@@ -170,7 +177,7 @@ class SnippetAdmin(admin.ModelAdmin):
         (
             'Basic Information',
             {
-                'fields': ['name', 'embedded']
+                'fields': ['name', 'embedded', 'render_button']
             }
         ),
         (
@@ -216,8 +223,6 @@ class SnippetAdmin(admin.ModelAdmin):
             width=obj.image_rendered.width,
             height=obj.image_rendered.height
             ))
-    # report_rendered_preview.short_description = 'sfasdfsff'
-    report_rendered_preview.label = 'sfasdfsff'
 
     def report_snippet_preview(self, obj):
         return mark_safe("<img src={url} width={width} height={height} />".format(
@@ -237,7 +242,16 @@ class SnippetAdmin(admin.ModelAdmin):
             height=obj.image_rendered.height
             ))
 
+    # method that acts like a field
+    # this adds a button to render the embedded report as an image
+    # MD: moved to model
+    # def render_button(self, obj):
+    #     return mark_safe('<input type="submit" value="Render report" name="_render_report">')
 
+
+
+
+    ##########################################################################################
     # default created_by user with curent user
     # overwrite get_changeform_initial_data
     def get_changeform_initial_data(self, request):
@@ -246,29 +260,86 @@ class SnippetAdmin(admin.ModelAdmin):
         return get_data
 
 
-    # reference:
-    # https://docs.djangoproject.com/en/3.1/topics/forms/modelforms/
-    # https://stackoverflow.com/questions/4670783/make-the-user-in-a-model-default-to-the-current-user
-    # every time you save a form using commit=False, Django adds a save_m2m()
-    # method to your ModelForm subclass. After you’ve manually saved the instance
-    # produced by the form, you can invoke save_m2m()
-    # to save the many-to-many form data. For example:
-    def save_model(self, request, instance, form, change):
-        user = request.user
-        instance = form.save(commit=False)
-        if not change or not instance.created_by:
-            instance.created_by = user
-        instance.updated_by = user
-        instance.save()
-        form.save_m2m()
-        return instance
 
+    # this is adding an extra action to the list of actions in the list form
     actions = ['render_all_reports_in_selected_snippets']
 
+    # code behind the extra action
     def render_all_reports_in_selected_snippets(self, request, queryset):
         pass
         # queryset.update(status='p')
 
+    def response_change(self, request, obj):
+
+        return super().response_change(request, obj)
+
+    # one way to modify data when pressing a custom action
+    def response_post_save_change(self, request, obj):
+        """This method is called by `self.changeform_view()` when the form
+        was submitted successfully and should return an HttpResponse.
+        """
+        # Check that you clicked the button `_render_snippets`
+        if '_render_report' in request.POST:
+
+            # obj is the model data
+            # do something with obj
+
+
+
+            # reference: saving image file to django ImageField
+            # https://stackoverflow.com/questions/1308386/programmatically-saving-image-to-django-imagefield
+            # https://stackoverflow.com/questions/13393191/programmatically-add-file-to-django-imagefield
+
+            # MEDIA_ROOT
+            # obj.image_rendered = '/Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/mainsite/media/image_rendered/tableau-scrap-screenshot.png'
+            # obj.save()
+
+            # obj.image_rendered = 'image_rendered/tableau-scrap-screenshot.png'
+            # obj.save()
+            obj.embedded = os.environ
+            obj.save()
+
+            opts = self.model._meta
+            preserved_filters = self.get_preserved_filters(request)
+
+            msg = _('The report was rendered successsfuly')
+            self.message_user(request, msg, messages.SUCCESS)
+
+
+            # post_url = reverse(route, args=(new_obj.pk,))
+            # post_url = reverse(route, args=(obj.pk,))
+            post_url = "/admin/biportal/snippet/{}/change/".format(obj.pk)
+
+            # And redirect
+            # return super().response_post_save_change(request, obj)
+            return HttpResponseRedirect(post_url)
+
+        else:
+
+            # Otherwise, use default behavior
+            return super().response_post_save_change(request, obj)
+
+
+        # reference:
+        # https://docs.djangoproject.com/en/3.1/topics/forms/modelforms/
+        # https://stackoverflow.com/questions/4670783/make-the-user-in-a-model-default-to-the-current-user
+        # every time you save a form using commit=False, Django adds a save_m2m()
+        # method to your ModelForm subclass. After you’ve manually saved the instance
+        # produced by the form, you can invoke save_m2m()
+        # to save the many-to-many form data. For example:
+        def save_model(self, request, instance, form, change):
+            user = request.user
+            instance = form.save(commit=False)
+            if not change or not instance.created_by:
+                instance.created_by = user
+            instance.updated_by = user
+
+            ###########################
+            # instance.name = 'test changed snippet 1001'
+
+            instance.save()
+            form.save_m2m()
+            return instance
 
 
 

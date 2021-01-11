@@ -128,7 +128,7 @@ class Snippet(models.Model):
         )
 
     # embedded = models.TextField(
-    embedded = models.URLField(
+    embedded = models.CharField(
         max_length=2000,
         blank=True
         )
@@ -162,6 +162,10 @@ class Snippet(models.Model):
                 )
         return ""
 
+    # @property
+    def render_button(self):
+        return mark_safe('<input type="submit" value="Render report" name="_render_report">')
+    render_button.short_description = ''
 
     x = models.FloatField(
         default=0
