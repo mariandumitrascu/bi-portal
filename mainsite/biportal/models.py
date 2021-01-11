@@ -149,18 +149,18 @@ class Snippet(models.Model):
         blank = True
         )
 
-    @property
-    def image_cropped_preview(self):
-        if self.image_cropped:
-            _image_cropped = get_thumbnail(self.thumbnail,
-                                #    '300x300',
-                                   upscale=False,
-                                   crop=False,
-                                   quality=100)
-            return format_html('<img src="{}" width="{}" height="{}">'.format(
-                _image_cropped.url, _image_cropped.width, _image_cropped.height)
-                )
-        return ""
+    # @property
+    # def image_cropped_preview(self):
+    #     if self.image_cropped:
+    #         _image_cropped = get_thumbnail(self.thumbnail,
+    #                             #    '300x300',
+    #                                upscale=False,
+    #                                crop=False,
+    #                                quality=100)
+    #         return format_html('<img src="{}" width="{}" height="{}">'.format(
+    #             _image_cropped.url, _image_cropped.width, _image_cropped.height)
+    #             )
+    #     return ""
 
     # @property
     def render_button(self):
@@ -219,7 +219,7 @@ class Snippet(models.Model):
     # overwritting save
     def save(self, *args, **kwargs):
             super().save(*args, **kwargs)
-            img = Image.open(self.image_cropped.path)
+            # img = Image.open(self.image_cropped.path)
             # output_size = (125, 125)
             # img.thumbnail(output_size)
             # img.save(self.image.path)

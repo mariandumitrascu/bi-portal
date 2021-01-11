@@ -149,3 +149,6 @@ INTERNAL_IPS = ['127.0.0.1']
 X_FRAME_OPTIONS = 'ALLOW'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+

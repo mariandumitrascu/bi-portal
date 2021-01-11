@@ -1,5 +1,10 @@
-import os, time, uuid
+import os, time, uuid, sys
 from urllib.parse import quote as urlquote
+import asyncio
+import datetime
+# import tornado
+# import tornado.platform
+# import tornado.platform.asyncio
 
 from django.contrib import admin
 from django.utils.html import mark_safe
@@ -11,8 +16,13 @@ from django.contrib import messages
 from django.core.files import File
 from django.utils.translation import gettext as _, ngettext
 from django.conf import settings
+from asgiref.sync import sync_to_async
+from asgiref.sync import async_to_sync
+from django.utils.crypto import get_random_string
+
 
 from sorl.thumbnail.admin import AdminImageMixin
+from PIL import Image
 
 from .models import Presentation, Bipage, Snippet
 
@@ -165,7 +175,7 @@ class SnippetAdmin(admin.ModelAdmin):
 
     form = SnippetAdminForm
 
-    change_form_template = 'admin/change_form.html'
+    change_form_template = 'admin/change_form_snippets.html'
 
     ordering = ('created_at',)
 
@@ -181,14 +191,20 @@ class SnippetAdmin(admin.ModelAdmin):
             }
         ),
         (
+            'Rendered report',
+            {
+                'classes': ('collapse',),
+                'fields':
+                [
+                    ('report_rendered_preview', 'image_rendered'),
+                ]
+            }
+        ),
+        (
             'Snippet Image',
             {
                 'fields':
                 [
-                    ('report_rendered_preview', 'image_rendered'),
-                    # ('image_cropped', 'image_cropped_full_preview')
-                    # 'image_cropped',
-                    # 'image_cropped_full_preview'
                     ('report_snippet_preview', 'image_cropped',)
                 ]
             }
@@ -211,6 +227,8 @@ class SnippetAdmin(admin.ModelAdmin):
 
     list_display = ['image_cropped_preview', 'name', 'created_by', 'created_at','updated_at']
 
+    list_display_links = ['image_cropped_preview', 'name']
+
     search_fields = ['name', 'created_at']
 
     list_per_page = 5
@@ -218,7 +236,30 @@ class SnippetAdmin(admin.ModelAdmin):
     # reference:
     # https://ilovedjango.com/django/admin/how-to-show-image-from-imagefield-in-django-admin-page/
     def report_rendered_preview(self, obj):
-        return mark_safe("<img src={url} width={width} height={height} />".format(
+        # return mark_safe("""<img src={url}
+        # width={width}
+        # height={height} id='image'/>""".format(
+        #     url = obj.image_rendered.url,
+        #     width=obj.image_rendered.width,
+        #     height=obj.image_rendered.height
+        #     ))
+        return mark_safe("""
+
+    <div class="modal fade" id="modalCrop">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button> -->
+                <button type="button" class="btn btn-primary js-crop-and-upload">Set Snippet Position</button>
+                </div>
+                <div class="modal-body">
+                    <img src={url} width={width} height={height} id="image2" style="max-width: 100%;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+        """.format(
             url = obj.image_rendered.url,
             width=obj.image_rendered.width,
             height=obj.image_rendered.height
@@ -231,9 +272,17 @@ class SnippetAdmin(admin.ModelAdmin):
             height=obj.image_cropped.height
             ))
     def image_cropped_preview(self, obj):
-        return mark_safe("<img src={url} width=220 />".format(
-            url = obj.image_cropped.url,
-            ))
+
+        try:
+            html = mark_safe("<img src={url} width=220 />".format(
+                url = obj.image_cropped.url,
+                ))
+        except:
+            html = ""
+
+
+        return html
+
 
     def image_rendered_preview(self, obj):
         return mark_safe("<img src={url} width={width} height={height} />".format(
@@ -271,6 +320,40 @@ class SnippetAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj):
 
+
+        if '_continue' in request.POST or '_save' in request.POST:
+            try:
+                if obj.x > 0.0 and obj.y > 0.0:
+                    x = obj.x
+                    y = obj.y
+                    h = obj.h
+                    w = obj.w
+                    image = Image.open(obj.image_rendered.file)
+                    cropped_image = image.crop((x, y, w+x, h+y))
+
+                    # path = '/Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/mainsite/media/image_cropped/temp_img_cropped.png'
+
+                    uid = get_random_string(length=16, allowed_chars=u'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
+                    date = datetime.datetime.now()
+                    result = '%s-%s-%s_%s' % (date.year, date.month, date.day, uid)
+                    filepath = "{}/image_cropped/{}.png".format(
+                        settings.MEDIA_ROOT,
+                        result
+                    )
+
+                    file_in_media = "image_cropped/{}.png".format(
+                        result
+                    )
+
+                    cropped_image.save(filepath, format='PNG')
+
+                    obj.image_cropped = file_in_media
+
+                    obj.save()
+            except:
+                pass
+
+
         return super().response_change(request, obj)
 
     # one way to modify data when pressing a custom action
@@ -300,15 +383,82 @@ class SnippetAdmin(admin.ModelAdmin):
             #################################################################
             # logic to render the report using pyppeteer:
 
+            # url = 'https://public.tableau.com/en-us/gallery/holiday-consumer-spending?tab=featured&type=featured'
+            # filepath = '/Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/mainsite/media/image_rendered/test_report_render_001.png'
+
+            url = ''
+
+            if obj.embedded:
+                url = obj.embedded
 
 
-            obj.save()
+            # # tornado.platform.asyncio
+            # # asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+            # loop = asyncio.new_event_loop()
+            # asyncio.set_event_loop(loop)
+            # asyncio.get_event_loop().run_until_complete(render_report(url, filepath))
 
-            opts = self.model._meta
-            preserved_filters = self.get_preserved_filters(request)
+            # tornado.platform.asyncio
+            # tornado.platform.asyncio.set_event_loop_policy(tornado.platform.asyncio.WindowsProactorEventLoopPolicy())
+            # loop = tornado.platform.asyncio.new_event_loop()
+            # tornado.platform.asyncio.set_event_loop(loop)
+            # tornado.platform.asyncio.get_event_loop().run_until_complete(render_report_02())
 
-            msg = _('The report was rendered successsfuly')
-            self.message_user(request, msg, messages.SUCCESS)
+
+            rendered_ok = False
+            file_in_media = ''
+
+            try:
+                if url:
+                    # generate the filename
+                    uid = get_random_string(length=16, allowed_chars=u'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
+                    date = datetime.datetime.now()
+                    result = '%s-%s-%s_%s' % (date.year, date.month, date.day, uid)
+                    filepath = "{}/image_rendered/{}.png".format(
+                        settings.MEDIA_ROOT,
+                        result
+                    )
+
+                    file_in_media = "image_rendered/{}.png".format(
+                        result
+                    )
+
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+                    loop.run_until_complete(render_report(url, filepath))
+                    rendered_ok = True
+                else:
+                    rendered_ok = False
+            except:
+                # sys.exc_info()[0]
+                raise
+
+
+
+            # # reference:
+            # # https://docs.djangoproject.com/en/3.1/topics/async/
+            # sync_get_data = async_to_sync(render_report_02(), force_new_loop=True)
+            # time.sleep(5)
+
+
+            # asyncio.run(render_report_02())
+            # async_to_sync(render_report_02(), force_new_loop=True)()
+
+            # await render_report_02()
+            # time.sleep(6)
+
+            # save the image in image_rendered field
+            # obj.image_rendered = 'image_rendered/test_report_render_001.png'
+
+            if rendered_ok:
+                obj.image_rendered = file_in_media
+                obj.save()
+
+                opts = self.model._meta
+                preserved_filters = self.get_preserved_filters(request)
+
+                msg = _('The report was rendered successsfuly')
+                self.message_user(request, msg, messages.SUCCESS)
 
 
             # post_url = reverse(route, args=(new_obj.pk,))
@@ -318,6 +468,17 @@ class SnippetAdmin(admin.ModelAdmin):
             # And redirect
             # return super().response_post_save_change(request, obj)
             return HttpResponseRedirect(post_url)
+
+        # elif '_continue' in request.POST or '_save' in request.POST:
+        #     x = obj.x
+        #     y = obj.y
+        #     h = obj.h
+        #     w = obj.w
+        #     image = Image.open(obj.image_rendered.file)
+        #     cropped_image = image.crop((x, y, w+x, h+y))
+
+        #     obj.image_cropped = cropped_image.file
+        #     return super().response_post_save_change(request, obj)
 
         else:
 
@@ -350,3 +511,97 @@ class SnippetAdmin(admin.ModelAdmin):
 
 # admin.site.register(Presentation)
 # admin.site.register(Snippet)
+
+
+####################################################################################################
+# TODO: should be moved to it's own class
+from pyppeteer import launch
+
+
+def worker(ws, loop):
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(ws.start())
+
+
+
+async def render_report(url, filepath):
+
+    # browser = await launch()
+    browser = await launch(
+        handleSIGINT=False,
+        handleSIGTERM=False,
+        handleSIGHUP=False
+        )
+    page = await browser.newPage()
+
+    # await page.setViewport({
+    #     'width': 800,
+    #     'height': 800
+    # })
+
+    await page.setViewport({
+        'width': 1200,
+        'height': 1000
+    })
+
+    await page.goto(url, {'waitUntil': 'networkidle2' })
+    time.sleep(5)
+    await page.screenshot({
+        'path': filepath,
+        'fullPage': 'true'
+        })
+
+    dimensions = await page.evaluate('''() => {
+        return {
+            width: document.documentElement.clientWidth,
+            height: document.documentElement.clientHeight,
+            deviceScaleFactor: window.devicePixelRatio,
+        }
+    }''')
+
+    print(dimensions)
+    # >>> {'width': 800, 'height': 600, 'deviceScaleFactor': 1}
+    await browser.close()
+
+
+
+
+async def render_report_02():
+
+    url = 'https://public.tableau.com/en-us/gallery/holiday-consumer-spending?tab=featured&type=featured'
+    filepath = '/Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/mainsite/media/image_rendered/test_report_render_001.png'
+
+    # browser = await launch()
+    browser = await launch(
+        handleSIGINT=False,
+        handleSIGTERM=False,
+        handleSIGHUP=False
+        )
+    page = await browser.newPage()
+
+    # await page.setViewport({
+    #     'width': 800,
+    #     'height': 800
+    # })
+
+    await page.setViewport({
+        'width': 600,
+        'height': 1000
+    })
+
+    await page.goto(url, {'waitUntil': 'networkidle2' })
+    time.sleep(3)
+    await page.screenshot({'path': filepath})
+
+    dimensions = await page.evaluate('''() => {
+        return {
+            width: document.documentElement.clientWidth,
+            height: document.documentElement.clientHeight,
+            deviceScaleFactor: window.devicePixelRatio,
+        }
+    }''')
+
+    # print(dimensions)
+    # >>> {'width': 800, 'height': 600, 'deviceScaleFactor': 1}
+    await browser.close()
+

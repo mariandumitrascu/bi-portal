@@ -1,0 +1,221 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+{% load crispy_forms_tags %}
+
+
+
+{% block javascript %}
+  <script>
+    $(function () {
+
+      /* SCRIPT TO OPEN THE MODAL WITH THE PREVIEW */
+      /*
+      $("#id_file").change(
+      function () {
+        if (this.files && this.files[0]) {
+
+          var reader = new FileReader();
+
+          reader.onload = function (e) {
+            $("#image").attr("src", e.target.result);
+            $("#modalCrop").modal("show");
+          }
+
+          reader.readAsDataURL(this.files[0]);
+        }
+      });
+      */
+
+      /* SCRIPTS TO HANDLE THE CROPPER BOX */
+      var $image = $("#image2");
+      var cropBoxData;
+      var canvasData;
+
+
+    // reference:
+    // https://github.com/fengyuanchen/cropperjs
+      //$("#modalCrop").on("shown.bs.modal", function () {
+        $("#modalCrop").on("shown", function () {
+
+        $image.cropper({
+            viewMode: 3,
+            initialAspectRatio: 0.1,
+            aspectRatio: 0.1,
+            autoCropArea: 0.1,
+            minCropBoxWidth: 120,
+            minCropBoxHeight:120,
+            dragCrop: false,
+            zoomable: false,
+            zoomOnTouch: false,
+            zoomOnWheel: false,
+            movable: false,
+            scalable: false,
+
+            ready: function () {
+                $image.cropper("setCanvasData", canvasData);
+                $image.cropper("setCropBoxData", cropBoxData);
+          }
+        })
+
+
+
+      }).on("hidden.bs.modal", function () {
+
+        cropBoxData = $image.cropper("getCropBoxData");
+        canvasData = $image.cropper("getCanvasData");
+
+        $image.cropper("destroy");
+      });
+
+
+      /* SCRIPT TO COLLECT THE DATA AND POST TO THE SERVER */
+      $(".js-crop-and-upload").click(function () {
+
+
+        $image.cropper({
+            viewMode: 3,
+            //initialAspectRatio: 0.1,
+            //aspectRatio: 0.1,
+            //autoCropArea: 0.3,
+            minCropBoxWidth: 120,
+            minCropBoxHeight:120,
+            dragCrop: false,
+            zoomable: false,
+            zoomOnTouch: false,
+            zoomOnWheel: false,
+            movable: false,
+            scalable: false,
+            data:{
+                    width: 240,
+                    height:  240,
+                },
+
+            ready: function () {
+                $image.cropper("setCanvasData", canvasData);
+                $image.cropper("setCropBoxData", cropBoxData);
+          }
+        })
+
+        var cropData = $image.cropper("getData");
+        $("#id_x").val(cropData["x"]);
+        $("#id_y").val(cropData["y"]);
+        $("#id_h").val(cropData["height"]);
+        $("#id_w").val(cropData["width"]);
+
+        // $("#formUpload").submit();
+
+
+      });
+
+    });
+  </script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% block extrahead %}{{ block.super }}
+<script src="{% url 'admin:jsi18n' %}"></script>
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+{% if not is_popup %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+&rsaquo; {% if has_view_permission %}<a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %}
+&rsaquo; {% if add %}{% blocktranslate with name=opts.verbose_name %}Add {{ name }}{% endblocktranslate %}{% else %}{{ original|truncatewords:"18" }}{% endif %}
+</div>
+{% endblock %}
+{% endif %}
+
+{% block content %}<div id="content-main">
+{% block object-tools %}
+{% if change %}{% if not is_popup %}
+  <ul class="object-tools">
+    {% block object-tools-items %}
+      {% change_form_object_tools %}
+    {% endblock %}
+  </ul>
+{% endif %}{% endif %}
+{% endblock %}
+<form {% if has_file_field %}enctype="multipart/form-data" {% endif %}{% if form_url %}action="{{ form_url }}" {% endif %}method="post" id="{{ opts.model_name }}_form" novalidate>
+{% csrf_token %}
+  {% block form_top %}
+  {% endblock %}
+<div>
+{% if is_popup %}<input type="hidden" name="{{ is_popup_var }}" value="1">{% endif %}
+
+
+{% if to_field %}<input type="hidden" name="{{ to_field_var }}" value="{{ to_field }}">{% endif %}
+
+
+{% if save_on_top %}
+  {% block submit_buttons_top %}
+    {% submit_row %}
+  {% endblock %}
+{% endif %}
+
+
+{% if errors %}
+    <p class="errornote">
+    {% if errors|length == 1 %}{% translate "Please correct the error below." %}{% else %}{% translate "Please correct the errors below." %}{% endif %}
+    </p>
+    {{ adminform.form.non_field_errors }}
+{% endif %}
+
+{% block field_sets %}
+    {% for fieldset in adminform %}
+        {% include "admin/includes/fieldset.html" %}
+    {% endfor %}
+{% endblock %}
+
+{% block after_field_sets %}
+{% endblock %}
+
+{% block inline_field_sets %}
+    {% for inline_admin_formset in inline_admin_formsets %}
+        {% include inline_admin_formset.opts.template %}
+    {% endfor %}
+{% endblock %}
+
+{% block after_related_objects %}{% endblock %}
+
+{% block submit_buttons_bottom %}{% submit_row %}{% endblock %}
+
+{% block admin_change_form_document_ready %}
+    <script id="django-admin-form-add-constants"
+            src="{% static 'admin/js/change_form.js' %}"
+            {% if adminform and add %}
+                data-model-name="{{ opts.model_name }}"
+            {% endif %}
+            async>
+    </script>
+{% endblock %}
+
+{# JavaScript for prepopulated fields #}
+{% prepopulated_fields_js %}
+
+</div>
+</form></div>
+{% endblock %}

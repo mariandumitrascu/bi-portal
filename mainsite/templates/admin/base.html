@@ -21,6 +21,8 @@
     {% comment %} <link href="{% static 'biportal/css/bootstrap.css' %}" rel="stylesheet"> {% endcomment %}
     {% comment %} <link href="{% static 'biportal/css/bootstrap-theme.css' %}" rel="stylesheet"> {% endcomment %}
 
+    <link href="{% static 'biportal/css/cropper.min.css' %}" rel="stylesheet">
+
 </head>
 {% load i18n %}
 
@@ -106,13 +108,17 @@
 </body>
 
 {% comment %}
+{% endcomment %}
+
 
     <script src="{% static 'biportal/js/jquery-3.2.1.js' %}"></script>
     <script src="{% static 'biportal/js/popper.js' %}"></script>
     <script src="{% static 'biportal/js/bootstrap.js' %}"></script>
     <script src="{% static 'biportal/js/cropper.min.js' %}"></script>
 
- {% endcomment %}
+    {% block javascript %}
+    {% endblock %}
+
 
 
 </html>
