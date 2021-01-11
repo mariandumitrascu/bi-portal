@@ -296,7 +296,12 @@ class SnippetAdmin(admin.ModelAdmin):
 
             # obj.image_rendered = 'image_rendered/tableau-scrap-screenshot.png'
             # obj.save()
-            obj.embedded = os.environ
+
+            #################################################################
+            # logic to render the report using pyppeteer:
+
+
+
             obj.save()
 
             opts = self.model._meta

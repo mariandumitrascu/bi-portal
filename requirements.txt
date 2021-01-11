@@ -1,3 +1,4 @@
+appdirs==1.4.4
 asgiref==3.3.1
 beautifulsoup4==4.9.3
 Django==3.1.5
@@ -8,8 +9,13 @@ django-taggit==1.3.0
 django-widget-tweaks==1.4.8
 isort==5.7.0
 Pillow==8.1.0
+pyee==8.1.0
+pyppeteer==0.2.5
 python-dotenv==0.15.0
 pytz==2020.5
 sorl-thumbnail==12.7.0
 soupsieve==2.1
 sqlparse==0.4.1
+tqdm==4.56.0
+urllib3==1.26.2
+websockets==8.1
