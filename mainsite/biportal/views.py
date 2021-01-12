@@ -18,6 +18,9 @@ from .forms import SnippetForm
 def home(request):
     return HttpResponse('Guardian BI Portal')
 
+def presentation_page(request):
+    return HttpResponse('Test presentation page')
+
 class HomePage(TemplateView):
     template_name = "index.html"
 
@@ -25,14 +28,14 @@ class HomePage(TemplateView):
         return super().get(request, *args, **kwargs)
 
 
-def snippet_list(request):
-    photos = Snippet.objects.all()
-    if request.method == 'POST':
-        form = PhotoForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('photo_list')
-    else:
-        form = PhotoForm()
-    return render(request, 'album/photo_list.html', {'form': form, 'photos': photos})
+# def snippet_list(request):
+#     photos = Snippet.objects.all()
+#     if request.method == 'POST':
+#         form = PhotoForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('photo_list')
+#     else:
+#         form = PhotoForm()
+#     return render(request, 'album/photo_list.html', {'form': form, 'photos': photos})
 

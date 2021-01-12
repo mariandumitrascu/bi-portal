@@ -22,6 +22,7 @@ ppt_master_choices = [
 
 ###########################################################################################################
 class Presentation(models.Model):
+
     name = models.CharField(
         max_length=30,
         # unique=True
@@ -33,9 +34,19 @@ class Presentation(models.Model):
         blank=True
         )
 
-    # pages = models.PositiveIntegerField(
-    #     editable=False
-    #     )
+    ppt_file = models.FileField(
+        upload_to='exported_pres_ppt/',
+        null = True,
+        blank = True,
+        verbose_name = 'Exported PPT file',
+        )
+
+    pdf_file = models.FileField(
+        upload_to='exported_pres_pdf/',
+        null = True,
+        blank = True,
+        verbose_name = 'Exported PDF file'
+        )
 
     ppt_master_file = models.CharField(
         max_length = 20,
@@ -251,10 +262,29 @@ class Bipage(models.Model):
 
     snippets = models.ManyToManyField(
         Snippet,
+        null = True,
+        blank = True,
         )
 
     texts = models.ManyToManyField(
         SnippetHtml,
+        null = True,
+        blank = True,
+
+        )
+
+    ppt_file = models.FileField(
+        upload_to='exported_pages_ppt/',
+        null = True,
+        blank = True,
+        verbose_name = 'Exported PPT file'
+        )
+
+    pdf_file = models.FileField(
+        upload_to='exported_pages_pdf/',
+        null = True,
+        blank = True,
+        verbose_name = 'Exported PDF file',
         )
 
     ppt_page_layout = models.CharField(
@@ -275,6 +305,25 @@ class Bipage(models.Model):
     last_updated = models.DateTimeField(
         auto_now_add=True
         )
+
+
+    def page_preview(self):
+        html = """
+        <iframe src="/bip/page/"
+        style="width:1000px; height:600px; border: 1px solid black;"></iframe>
+        """
+        return mark_safe(html)
+
+    page_preview.short_description = ''
+
+    def layout_preview(self):
+        html = """
+        <img src='/static/biportal/img/content_layout_02.png' />
+        """
+        return mark_safe(html)
+
+    layout_preview.short_description = ''
+
 
     def __str__(self):
         return self.name

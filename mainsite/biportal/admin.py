@@ -94,11 +94,17 @@ class PresentationAdmin(admin.ModelAdmin):
                 'fields': ['name', 'description', 'ppt_master_file', 'active']
             }
         ),
-
         (
             'Metadata',
             {
                 'fields': ['created_by', 'created_at', 'tags']
+            }
+        ),
+        (
+            'Exported files',
+            {
+                'classes': ('collapse',),
+                'fields': [('ppt_file', 'pdf_file')]
             }
         ),
     ]
@@ -624,6 +630,45 @@ async def render_report_02():
 @admin.register(Bipage)
 class BipageAdmin(admin.ModelAdmin):
 
+    readonly_fields = ['presentation', 'layout_preview', 'page_preview']
+
+    fieldsets = [
+        (
+            '',
+            {
+                'fields': [('presentation', 'ppt_page_layout', 'layout_preview')]
+            },
+        ),
+        (
+            '',
+            {
+                'fields': [ 'name', 'subtitle', ]
+            },
+        ),
+        (
+            'Page Components',
+            {
+                'classes': ('collapse',),
+                'fields': [ ('snippets', 'texts'), ]
+            },
+        ),
+        (
+            'Exported files',
+            {
+                'classes': ('collapse',),
+                'fields': [('ppt_file', 'pdf_file')]
+            }
+        ),
+        (
+            '',
+            {
+                'fields': ['page_preview']
+            }
+        ),
+
+
+
+    ]
 
     # reference: hide it in the admin menu
     # https://stackoverflow.com/questions/2431727/django-admin-hide-a-model
