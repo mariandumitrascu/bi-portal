@@ -7,7 +7,7 @@
 {% block javascript %}
   <script>
 
- 
+
     $(function () {
 
 
@@ -39,38 +39,6 @@
 
     // reference:
     // https://github.com/fengyuanchen/cropperjs
-      //$("#modalCrop").on("shown.bs.modal", function () {
-        $("#modalCrop").on("shown", function () {
-
-        $image.cropper({
-            viewMode: 3,
-            initialAspectRatio: 0.1,
-            aspectRatio: 0.1,
-            autoCropArea: 0.1,
-            minCropBoxWidth: 120,
-            minCropBoxHeight:120,
-            dragCrop: false,
-            zoomable: false,
-            zoomOnTouch: false,
-            zoomOnWheel: false,
-            movable: false,
-            scalable: false,
-
-            ready: function () {
-                $image.cropper("setCanvasData", canvasData);
-                $image.cropper("setCropBoxData", cropBoxData);
-          }
-        })
-
-
-
-      }).on("hidden.bs.modal", function () {
-
-        cropBoxData = $image.cropper("getCropBoxData");
-        canvasData = $image.cropper("getCanvasData");
-
-        $image.cropper("destroy");
-      });
 
 
       /* SCRIPT TO COLLECT THE DATA AND POST TO THE SERVER */
@@ -90,6 +58,7 @@
             zoomOnWheel: false,
             movable: false,
             scalable: false,
+            preview: '#snippet_preview',
             data:{
                     width: 240,
                     height:  240,

@@ -84,41 +84,29 @@ class Presentation(models.Model):
         verbose_name_plural = 'Presentations'
         ordering = ["-created_at"]
 
-###########################################################################################################
-ppt_page_layout_choices = [
-    ('header', 'Header Page'),
-    ('content1', 'Content With 1 Placeholder'),
-    ('content2', 'Content With 2 Columns'),
-]
-class Bipage(models.Model):
-    name = models.CharField(
-        max_length=30,
-        )
 
-    ppt_page_layout = models.CharField(
-        max_length = 20,
+###########################################################################################################
+class SnippetHtml(models.Model):
+    name = models.CharField(
+        max_length=200,
         null = True,
         blank = True,
-        choices = ppt_page_layout_choices,
-        default = 'content1',
-        verbose_name = 'PPT Page Layout'
+        verbose_name = 'Title'
         )
 
-    presentation = models.ForeignKey(
-        Presentation,
-        related_name='presentations',
-        on_delete=models.CASCADE
-        )
-
-    last_updated = models.DateTimeField(
-        auto_now_add=True
+    htmltext = models.TextField(
+        null = True,
+        blank = True,
+        verbose_name= 'Content'
         )
 
     def __str__(self):
         return self.name
+
     class Meta:
-        verbose_name = 'BI Page'
-        verbose_name_plural = 'BI Pages'
+        verbose_name = 'HTML Text'
+        verbose_name_plural = 'HTML Texts'
+
 
 ###########################################################################################################
 class Snippet(models.Model):
@@ -209,7 +197,7 @@ class Snippet(models.Model):
         )
 
     # will be available as bipage.pages_set and snippet.bipages
-    pages = models.ManyToManyField(Bipage)
+    # pages = models.ManyToManyField(Bipage)
 
     tags = TaggableManager(
         blank = True
@@ -233,3 +221,58 @@ class Snippet(models.Model):
 
 
 ###########################################################################################################
+ppt_page_layout_choices = [
+    ('header', 'Header Page'),
+    ('content1', 'Content With 1 Placeholder'),
+    ('content2', 'Content With 2 Columns'),
+]
+class Bipage(models.Model):
+    name = models.CharField(
+        max_length=200,
+        null = True,
+        blank = True,
+        verbose_name = 'Title'
+        )
+
+    subtitle = models.CharField(
+        max_length=200,
+        null = True,
+        blank = True,
+        verbose_name = 'Subtitle'
+        )
+
+    snippets = models.ManyToManyField(
+        Snippet,
+        )
+
+    texts = models.ManyToManyField(
+        SnippetHtml,
+        )
+
+    ppt_page_layout = models.CharField(
+        max_length = 200,
+        null = True,
+        blank = True,
+        choices = ppt_page_layout_choices,
+        default = 'content1',
+        verbose_name = 'PPT Page Layout'
+        )
+
+    presentation = models.ForeignKey(
+        Presentation,
+        related_name='presentations',
+        on_delete=models.CASCADE
+        )
+
+    last_updated = models.DateTimeField(
+        auto_now_add=True
+        )
+
+    def __str__(self):
+        return self.name
+
+
+    class Meta:
+        verbose_name = 'BI Page'
+        verbose_name_plural = 'BI Pages'
+

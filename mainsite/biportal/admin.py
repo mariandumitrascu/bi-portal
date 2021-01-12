@@ -24,7 +24,7 @@ from django.utils.crypto import get_random_string
 from sorl.thumbnail.admin import AdminImageMixin
 from PIL import Image
 
-from .models import Presentation, Bipage, Snippet
+from .models import Presentation, Bipage, Snippet, SnippetHtml
 
 # references:
 # for sorl.thumbnail: https://sorl-thumbnail.readthedocs.io/en/latest/examples.html
@@ -212,6 +212,7 @@ class SnippetAdmin(admin.ModelAdmin):
         (
             'Position and Dimensions',
             {
+                'classes': ('collapse',),
                 'fields': [('x', 'y'), ('w', 'h')],
                 # 'description': 'sfdsfd dsf sdf ds fds  fds  f'
             }
@@ -274,11 +275,21 @@ class SnippetAdmin(admin.ModelAdmin):
             ))
 
     def report_snippet_preview(self, obj):
-        return mark_safe("<img src={url} width={width} height={height} />".format(
-            url = obj.image_cropped.url,
-            width=obj.image_cropped.width,
-            height=obj.image_cropped.height
-            ))
+
+        html = ''
+        url = ''
+        try:
+            url = obj.image_cropped.url
+        except:
+            pass
+
+        html = """
+        <div id='snippet_preview'>
+            <img src={url} />
+        </div>
+        """.format(url = url,)
+
+        return mark_safe(html)
 
     def image_cropped_preview(self, obj):
 
@@ -374,10 +385,6 @@ class SnippetAdmin(admin.ModelAdmin):
             # https://stackoverflow.com/questions/1308386/programmatically-saving-image-to-django-imagefield
             # https://stackoverflow.com/questions/13393191/programmatically-add-file-to-django-imagefield
 
-            # MEDIA_ROOT
-            # obj.image_rendered = '/Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/mainsite/media/image_rendered/tableau-scrap-screenshot.png'
-            # obj.save()
-
             # obj.image_rendered = 'image_rendered/tableau-scrap-screenshot.png'
             # obj.save()
 
@@ -385,7 +392,6 @@ class SnippetAdmin(admin.ModelAdmin):
             # logic to render the report using pyppeteer:
 
             # url = 'https://public.tableau.com/en-us/gallery/holiday-consumer-spending?tab=featured&type=featured'
-            # filepath = '/Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/mainsite/media/image_rendered/test_report_render_001.png'
 
             url = ''
 
@@ -589,4 +595,22 @@ async def render_report_02():
     # print(dimensions)
     # >>> {'width': 800, 'height': 600, 'deviceScaleFactor': 1}
     await browser.close()
+
+
+
+############################################################################################################
+############################################################################################################
+############################################################################################################
+# admin.site.register(Bipage)
+admin.site.register(SnippetHtml)
+
+@admin.register(Bipage)
+class BipageAdmin(admin.ModelAdmin):
+
+   def get_model_perms(self, request):
+        """
+        Return empty perms dict thus hiding the model from admin index.
+        """
+        return {}
+
 
