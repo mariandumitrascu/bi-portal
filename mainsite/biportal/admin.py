@@ -581,41 +581,6 @@ async def render_report(url, filepath):
 
 
 
-async def render_report_02():
-
-    url = 'https://public.tableau.com/en-us/gallery/holiday-consumer-spending?tab=featured&type=featured'
-    filepath = '/Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/mainsite/media/image_rendered/test_report_render_001.png'
-
-    # browser = await launch()
-    browser = await launch(
-        handleSIGINT=False,
-        handleSIGTERM=False,
-        handleSIGHUP=False
-        )
-    page = await browser.newPage()
-
-    await page.setViewport({
-        'width': 600,
-        'height': 1000
-    })
-
-    await page.goto(url, {'waitUntil': 'networkidle2' })
-    time.sleep(3)
-    await page.screenshot({'path': filepath})
-
-    dimensions = await page.evaluate('''() => {
-        return {
-            width: document.documentElement.clientWidth,
-            height: document.documentElement.clientHeight,
-            deviceScaleFactor: window.devicePixelRatio,
-        }
-    }''')
-
-    # print(dimensions)
-    # >>> {'width': 800, 'height': 600, 'deviceScaleFactor': 1}
-    await browser.close()
-
-
 
 ############################################################################################################
 ############################################################################################################
