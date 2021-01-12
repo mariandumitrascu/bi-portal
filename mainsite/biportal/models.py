@@ -310,7 +310,7 @@ class Bipage(models.Model):
     def page_preview(self):
         html = """
         <iframe src="/bip/page/"
-        style="width:1000px; height:600px; border: 1px solid black;"></iframe>
+        style="width:1200px; height:800px; border: 1px solid #111111;"></iframe>
         """
         return mark_safe(html)
 

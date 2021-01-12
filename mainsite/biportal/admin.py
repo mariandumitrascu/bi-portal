@@ -85,6 +85,8 @@ class PresentationAdmin(admin.ModelAdmin):
 
     form = PresentatioAdminForm
 
+    save_on_top = True
+
     readonly_fields = ['created_at']
 
     fieldsets = [
@@ -595,6 +597,10 @@ async def render_report(url, filepath):
 @admin.register(Bipage)
 class BipageAdmin(admin.ModelAdmin):
 
+    change_form_template = 'admin/change_form_bipage.html'
+
+    save_on_top = True
+
     readonly_fields = ['presentation', 'layout_preview', 'page_preview']
 
     fieldsets = [
@@ -607,27 +613,28 @@ class BipageAdmin(admin.ModelAdmin):
         (
             '',
             {
-                'fields': [ 'name', 'subtitle', ]
+                'fields': [ ('name', 'subtitle',) ]
             },
-        ),
-        (
-            'Page Components',
-            {
-                'classes': ('collapse',),
-                'fields': [ ('snippets', 'texts'), ]
-            },
-        ),
-        (
-            'Exported files',
-            {
-                'classes': ('collapse',),
-                'fields': [('ppt_file', 'pdf_file')]
-            }
         ),
         (
             '',
             {
                 'fields': ['page_preview']
+            }
+        ),
+        (
+            'Components',
+            {
+                'classes': ('collapse',),
+                'fields': [ ('snippets', 'texts'), ]
+            },
+        ),
+
+        (
+            'Exported ',
+            {
+                'classes': ('collapse',),
+                'fields': [('ppt_file', 'pdf_file')]
             }
         ),
 
@@ -651,6 +658,8 @@ class BipageAdmin(admin.ModelAdmin):
         context.update({'show_render_all_report_snippets': True})
         context.update({'show_export_ppt': True})
         context.update({'show_export_pdf': True})
+        # context.update({'is_nav_sidebar_enabled': False})
+        # context.update({'show_presentation_nav': False})
         return super().render_change_form(request, context, *args, **kwargs)
 
 
