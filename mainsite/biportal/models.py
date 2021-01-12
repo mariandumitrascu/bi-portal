@@ -164,7 +164,9 @@ class Snippet(models.Model):
 
     # @property
     def render_button(self):
-        return mark_safe('<input type="submit" value="Render report" name="_render_report">')
+        html = '<input type="submit" value="Render report" name="_render_report" id=button_render_report>'
+        return mark_safe(html)
+
     render_button.short_description = ''
 
     x = models.FloatField(

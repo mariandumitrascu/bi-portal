@@ -1,4 +1,7 @@
-{% load i18n static %}<!DOCTYPE html>
+{% load i18n static %}
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
 {% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
@@ -18,7 +21,10 @@
     {% endblock %}
     {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE">{% endblock %}
 
-    {% comment %} <link href="{% static 'biportal/css/bootstrap.css' %}" rel="stylesheet"> {% endcomment %}
+
+    {% comment %} <link href="{% static 'biportal/css/bootstrap-02.css' %}" rel="stylesheet"> {% endcomment %}
+    <link href="{% static 'biportal/css/app.css' %}" rel="stylesheet">
+
     {% comment %} <link href="{% static 'biportal/css/bootstrap-theme.css' %}" rel="stylesheet"> {% endcomment %}
 
     <link href="{% static 'biportal/css/cropper.min.css' %}" rel="stylesheet">

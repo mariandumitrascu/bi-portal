@@ -233,6 +233,10 @@ class SnippetAdmin(admin.ModelAdmin):
 
     list_per_page = 5
 
+    # this is adding an extra action to the list of actions in the list form
+    actions = ['render_all_reports_in_selected_snippets']
+
+
     # reference:
     # https://ilovedjango.com/django/admin/how-to-show-image-from-imagefield-in-django-admin-page/
     def report_rendered_preview(self, obj):
@@ -255,6 +259,10 @@ class SnippetAdmin(admin.ModelAdmin):
                 <div class="modal-body">
                     <img src={url} width={width} height={height} id="image2" style="max-width: 100%;">
                 </div>
+                <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button> -->
+                <button type="button" class="btn btn-primary js-crop-and-upload">Set Snippet Position</button>
+                </div>
             </div>
         </div>
     </div>
@@ -271,6 +279,7 @@ class SnippetAdmin(admin.ModelAdmin):
             width=obj.image_cropped.width,
             height=obj.image_cropped.height
             ))
+
     def image_cropped_preview(self, obj):
 
         try:
@@ -308,18 +317,12 @@ class SnippetAdmin(admin.ModelAdmin):
         get_data['created_by'] = request.user.pk
         return get_data
 
-
-
-    # this is adding an extra action to the list of actions in the list form
-    actions = ['render_all_reports_in_selected_snippets']
-
     # code behind the extra action
     def render_all_reports_in_selected_snippets(self, request, queryset):
         pass
         # queryset.update(status='p')
 
     def response_change(self, request, obj):
-
 
         if '_continue' in request.POST or '_save' in request.POST:
             try:
@@ -331,11 +334,9 @@ class SnippetAdmin(admin.ModelAdmin):
                     image = Image.open(obj.image_rendered.file)
                     cropped_image = image.crop((x, y, w+x, h+y))
 
-                    # path = '/Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/mainsite/media/image_cropped/temp_img_cropped.png'
-
                     uid = get_random_string(length=16, allowed_chars=u'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
                     date = datetime.datetime.now()
-                    result = '%s-%s-%s_%s' % (date.year, date.month, date.day, uid)
+                    result = '%s-%s-%s-%s-%s-%s_%s' % (date.year, date.month, date.day, date.hour, date.minute, date.second, uid)
                     filepath = "{}/image_cropped/{}.png".format(
                         settings.MEDIA_ROOT,
                         result
@@ -413,7 +414,7 @@ class SnippetAdmin(admin.ModelAdmin):
                     # generate the filename
                     uid = get_random_string(length=16, allowed_chars=u'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
                     date = datetime.datetime.now()
-                    result = '%s-%s-%s_%s' % (date.year, date.month, date.day, uid)
+                    result = '%s-%s-%s-%s-%s-%s_%s' % (date.year, date.month, date.day, date.hour, date.minute, date.second, uid)
                     filepath = "{}/image_rendered/{}.png".format(
                         settings.MEDIA_ROOT,
                         result
@@ -518,12 +519,6 @@ class SnippetAdmin(admin.ModelAdmin):
 from pyppeteer import launch
 
 
-def worker(ws, loop):
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(ws.start())
-
-
-
 async def render_report(url, filepath):
 
     # browser = await launch()
@@ -534,18 +529,13 @@ async def render_report(url, filepath):
         )
     page = await browser.newPage()
 
-    # await page.setViewport({
-    #     'width': 800,
-    #     'height': 800
-    # })
-
     await page.setViewport({
         'width': 1200,
         'height': 1000
     })
 
     await page.goto(url, {'waitUntil': 'networkidle2' })
-    time.sleep(5)
+    # time.sleep(5)
     await page.screenshot({
         'path': filepath,
         'fullPage': 'true'
@@ -578,11 +568,6 @@ async def render_report_02():
         handleSIGHUP=False
         )
     page = await browser.newPage()
-
-    # await page.setViewport({
-    #     'width': 800,
-    #     'height': 800
-    # })
 
     await page.setViewport({
         'width': 600,
