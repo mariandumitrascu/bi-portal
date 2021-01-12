@@ -30,6 +30,9 @@ from .models import Presentation, Bipage, Snippet, SnippetHtml
 # for sorl.thumbnail: https://sorl-thumbnail.readthedocs.io/en/latest/examples.html
 
 
+############################################################################################################
+############################################################################################################
+############################################################################################################
 
 # class BipageInline(admin.StackedInline):
 class BipageInline(admin.TabularInline):
@@ -55,9 +58,16 @@ class BipageInline(admin.TabularInline):
         # return format_html(u'<a href="{}">Edit</a>', url)
         # # … or if you want to include other fields:
         # return format_html(u'<a href="{}">Edit: {}</a>', '/admin/bipage', instance.title)
-        return format_html(u'<a href="{}">Edit</a>', '/admin/bipage')
+        html = format_html("""
+        <a href="/admin/biportal/bipage/{}/change/">Edit</a>
+        """, instance.pk)
 
-###########################################################################################################
+        return html
+
+############################################################################################################
+############################################################################################################
+############################################################################################################
+
 
 class PresentatioAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -118,6 +128,8 @@ class PresentationAdmin(admin.ModelAdmin):
 
         # add a new key to the context
         context.update({'show_render_all_report_snippets': True})
+        context.update({'show_export_ppt': True})
+        context.update({'show_export_pdf': True})
         return super().render_change_form(request, context, *args, **kwargs)
 
     def response_post_save_change(self, request, obj):
@@ -160,10 +172,8 @@ class SnippetAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SnippetAdminForm, self).__init__(*args, **kwargs)
 
-        self.fields['embedded'].label = 'Embedded report code'
         self.fields['embedded'].widget = forms.Textarea(attrs={'cols': '80', 'rows': '3'})
 
-        # self.fields['report_rendered_preview'].label = 'Rendered report'
     class Meta:
         model = Snippet
         fields = '__all__'
@@ -520,7 +530,10 @@ class SnippetAdmin(admin.ModelAdmin):
 # admin.site.register(Snippet)
 
 
-####################################################################################################
+############################################################################################################
+############################################################################################################
+############################################################################################################
+
 # TODO: should be moved to it's own class
 from pyppeteer import launch
 
@@ -602,15 +615,73 @@ async def render_report_02():
 ############################################################################################################
 ############################################################################################################
 # admin.site.register(Bipage)
-admin.site.register(SnippetHtml)
+# admin.site.register(SnippetHtml)
+
+
+# example of link to change page:
+# http://127.0.0.1:8888/admin/biportal/bipage/29/change/
 
 @admin.register(Bipage)
 class BipageAdmin(admin.ModelAdmin):
 
-   def get_model_perms(self, request):
+
+    # reference: hide it in the admin menu
+    # https://stackoverflow.com/questions/2431727/django-admin-hide-a-model
+    def get_model_perms(self, request):
         """
         Return empty perms dict thus hiding the model from admin index.
         """
         return {}
+
+
+    def render_change_form(self, request, context, *args, **kwargs):
+        """We need to update the context to show the button."""
+
+        # add a new key to the context
+        context.update({'show_render_all_report_snippets': True})
+        context.update({'show_export_ppt': True})
+        context.update({'show_export_pdf': True})
+        return super().render_change_form(request, context, *args, **kwargs)
+
+
+############################################################################################################
+############################################################################################################
+############################################################################################################
+
+class SnippetHtmlForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SnippetHtmlForm, self).__init__(*args, **kwargs)
+
+        # self.fields['embedded'].label = 'Embedded report'
+        self.fields['htmltext'].widget = forms.Textarea(attrs={'cols': '80', 'rows': '10'})
+
+    class Meta:
+        model = SnippetHtml
+        fields = '__all__'
+
+#####################################################################################################
+@admin.register(SnippetHtml)
+class SnippetHtmlAdmin(admin.ModelAdmin):
+
+    form = SnippetHtmlForm
+
+    readonly_fields = ['get_htmltext_as_markdown']
+
+    fields = ['name', 'get_htmltext_as_markdown', 'htmltext']
+
+    searchfields = ['name', 'htmltext']
+
+    change_form_template = 'admin/change_form_markdown.html'
+
+    # reference: hide it in the admin menu
+    # https://stackoverflow.com/questions/2431727/django-admin-hide-a-model
+    def get_model_perms(self, request):
+        """
+        Return empty perms dict thus hiding the model from admin index.
+        """
+        return {}
+
+
+
 
 

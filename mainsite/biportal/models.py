@@ -11,6 +11,7 @@ from django.utils.html import format_html
 from PIL import Image
 from sorl.thumbnail import get_thumbnail
 from sorl.thumbnail import ImageField
+from markdown import markdown
 
 # references:
 # for sorl.thumbnail: https://sorl-thumbnail.readthedocs.io/en/latest/examples.html
@@ -99,6 +100,12 @@ class SnippetHtml(models.Model):
         blank = True,
         verbose_name= 'Content'
         )
+
+    def get_htmltext_as_markdown(self):
+        return mark_safe(markdown(self.htmltext, safe_mode='escape'))
+
+    get_htmltext_as_markdown.short_description = 'Content preview'
+
 
     def __str__(self):
         return self.name
@@ -227,6 +234,7 @@ ppt_page_layout_choices = [
     ('content2', 'Content With 2 Columns'),
 ]
 class Bipage(models.Model):
+
     name = models.CharField(
         max_length=200,
         null = True,
