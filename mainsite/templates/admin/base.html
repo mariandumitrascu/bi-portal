@@ -24,9 +24,7 @@
 
     {% comment %} <link href="{% static 'biportal/css/bootstrap-02.css' %}" rel="stylesheet"> {% endcomment %}
     <link href="{% static 'biportal/css/app.css' %}" rel="stylesheet">
-
     {% comment %} <link href="{% static 'biportal/css/bootstrap-theme.css' %}" rel="stylesheet"> {% endcomment %}
-
     <link href="{% static 'biportal/css/cropper.min.css' %}" rel="stylesheet">
 
 </head>
@@ -93,38 +91,30 @@
           {% endif %}
           {% if show_presentation_nav %}
                 {% comment %} ================================================================================== {% endcomment %}
+<button class="sticky toggle-nav-sidebar" id="toggle-nav-sidebar"
+    aria-label="{% translate 'Toggle navigation' %}"></button>
 <nav class="sticky" id="nav-sidebar">
     <div class="app-biportal module current-app">
-      <table>
-        <caption>
-          <a href="/admin/biportal/" class="section" title="Models in the BI Portal application">BI Portal</a>
-        </caption>
+        <table>
+            <caption>
+                <a href="/admin/biportal/" class="section" title="Presentation Pages">Presentation Pages</a>
+            </caption>
+            <tbody>
 
-          <tbody><tr class="model-presentation">
-
-              <th scope="row"><a href="/admin/biportal/presentation/">Presentations</a></th>
-
-
-
-              <td><a href="/admin/biportal/presentation/add/" class="addlink">Add</a></td>
-
-
-
-          </tr>
-
-          <tr class="model-snippet">
-
-              <th scope="row"><a href="/admin/biportal/snippet/">Snippets</a></th>
-
-
-
-              <td><a href="/admin/biportal/snippet/add/" class="addlink">Add</a></td>
-
-
-
-          </tr>
-
-      </tbody></table>
+                {% comment %}
+                <tr class="model-presentation">
+                    <th scope="row"><a href="/admin/biportal/presentation/">Presentations</a></th>
+                    <td><a href="/admin/biportal/presentation/add/" class="addlink">Add</a></td>
+                </tr>
+                {% endcomment %}
+                <tr class="model-snippet">
+                    <th scope="row">
+                        <img src="{% static 'biportal/img/left-nav-bar-image-02.png' %}">
+                    </th>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </nav>
                 {% comment %} ================================================================================== {% endcomment %}

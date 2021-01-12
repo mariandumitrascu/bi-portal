@@ -591,11 +591,24 @@ async def render_report(url, filepath):
 # admin.site.register(SnippetHtml)
 
 
-# example of link to change page:
-# http://127.0.0.1:8888/admin/biportal/bipage/29/change/
+class BipageAdminForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(BipageAdminForm, self).__init__(*args, **kwargs)
+
+        # self.fields['embedded'].label = 'Embedded report'
+        self.fields['name'].widget = forms.TextInput(attrs={'size': '60'})
+        self.fields['subtitle'].widget = forms.TextInput(attrs={'size': '60'})
+        # self.fields['ppt_page_layout'].widget = forms.Select(attrs={'size': '40'})
+
+    class Meta:
+        model = Bipage
+        fields = '__all__'
+
 
 @admin.register(Bipage)
 class BipageAdmin(admin.ModelAdmin):
+
+    form = BipageAdminForm
 
     change_form_template = 'admin/change_form_bipage.html'
 
@@ -659,7 +672,7 @@ class BipageAdmin(admin.ModelAdmin):
         context.update({'show_export_ppt': True})
         context.update({'show_export_pdf': True})
         # context.update({'is_nav_sidebar_enabled': False})
-        # context.update({'show_presentation_nav': False})
+        context.update({'show_presentation_nav': True})
         return super().render_change_form(request, context, *args, **kwargs)
 
 

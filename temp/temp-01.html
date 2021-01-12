@@ -34,3 +34,32 @@
         </table>
     </div>
 </nav>
+
+
+<button class="sticky toggle-nav-sidebar" id="toggle-nav-sidebar"
+    aria-label="{% translate 'Toggle navigation' %}"></button>
+<nav class="sticky" id="nav-sidebar">
+    <div class="app-biportal module current-app">
+        <table>
+            <caption>
+                <a href="/admin/biportal/" class="section" title="Presentation Pages">Presentation Pages</a>
+            </caption>
+            <tbody>
+
+                {% comment %}
+                <tr class="model-presentation">
+                    <th scope="row"><a href="/admin/biportal/presentation/">Presentations</a></th>
+                    <td><a href="/admin/biportal/presentation/add/" class="addlink">Add</a></td>
+                </tr>
+                {% endcomment %}
+                <tr class="model-snippet">
+                    <th scope="row">
+                        <img src="{% static 'biportal/img/left-nav-bar-image.png' %}">
+                    </th>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</nav>
+{% comment %} ================================================================================== {% endcomment %}
