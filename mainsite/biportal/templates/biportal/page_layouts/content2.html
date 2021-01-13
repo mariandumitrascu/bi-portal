@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load form_tags %}
 <html>
 
 <head>
@@ -18,8 +19,24 @@
 
 <body>
   <div class="container">
-    <h1>{{ bipage.title }}</h1>
-    <h3>{{ bipage.subtitle }}</h3>
+
+    {% if bipage.title %}
+        <h1>{{ bipage.title|replace_tokens }}</h1>
+    {% endif %}
+
+    {% if bipage.subtitle %}
+        <h3>{{ bipage.subtitle|replace_tokens }}</h3>
+    {% endif %}
+
+    <div style='border:1px solid silver; height: 450px;'>
+        <div style='padding: 10px 10px 10px 10px;'>
+            {% for snippet in bipage.snippets.all %}
+
+            <img src="{{ snippet.image_cropped.url }}" width="{{ snippet.image_cropped.width }}" height="{{ snippet.image_cropped.height }}">
+
+            {% endfor %}
+        </div>
+    </div>
 
     {% block content %}
     {% endblock %}

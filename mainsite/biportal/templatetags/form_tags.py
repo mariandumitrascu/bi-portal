@@ -17,3 +17,12 @@ def input_class(bound_field):
             css_class = 'is-valid'
 
     return 'form-control {}'.format(css_class)
+
+
+@register.filter(name='replace_tokens', is_safe=True)
+def replace_tokens(value):
+    """Replace tokens"""
+    value = value.replace('{last year}', '2020')
+    value = value.replace('{current year}', '2021')
+
+    return value

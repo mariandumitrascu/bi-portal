@@ -24,7 +24,7 @@ ppt_master_choices = [
 class Presentation(models.Model):
 
     name = models.CharField(
-        max_length=30,
+        max_length=200,
         # unique=True
         )
 
