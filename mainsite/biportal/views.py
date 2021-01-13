@@ -49,5 +49,12 @@ def presentation_page(request, pk):
     """
     bipage = get_object_or_404(Bipage, pk=pk)
 
+    context = {
+        'bipage': bipage
+    }
 
-    return HttpResponse('Test presentation page: {}'.format(bipage.name))
+    template = 'biportal/page_layouts/{}.html'.format(bipage.ppt_page_layout)
+
+    return render(request, template, context=context)
+
+    # return HttpResponse('Test presentation page: {}'.format(bipage.name))

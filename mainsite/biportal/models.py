@@ -269,13 +269,13 @@ class Bipage(models.Model):
 
     snippets = models.ManyToManyField(
         Snippet,
-        null = True,
+        # null = True,
         blank = True,
         )
 
     texts = models.ManyToManyField(
         SnippetHtml,
-        null = True,
+        # null = True,
         blank = True,
 
         )
@@ -316,8 +316,8 @@ class Bipage(models.Model):
 
     def page_preview(self):
         html = """
-        <iframe src="/bip/{}/page/"
-        style="width:1200px; height:800px; border: 1px solid grey;"></iframe>
+        <iframe src="/bip/{}/page/" scrolling="no"
+        style="width:1100px; height:620px; border: 1px solid grey;"></iframe>
         """.format(self.pk)
 
         return mark_safe(html)
@@ -325,9 +325,11 @@ class Bipage(models.Model):
     page_preview.short_description = ''
 
     def layout_preview(self):
+
         html = """
-        <img src='/static/biportal/img/content_layout_02.png' />
-        """
+        <img src='/static/biportal/img/page_layouts/{}.png' />
+        """.format(self.ppt_page_layout)
+
         return mark_safe(html)
 
     layout_preview.short_description = ''

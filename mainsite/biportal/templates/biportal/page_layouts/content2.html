@@ -9,30 +9,17 @@
   <link href="{% static 'biportal/css/bootstrap-theme.css' %}" rel="stylesheet">
   <style>
     body {
-            background-image: url("{% static 'biportal/img/page_layouts/assets/content1_bg.png' %}");
+            background-image: url("{% static 'biportal/img/page_layouts/assets/content2_bg.png' %}");
          }
   </style>
+
 
 </head>
 
 <body>
   <div class="container">
-  
     <h1>{{ bipage.title }}</h1>
-
-    {% if bipage.subtitle %}
-        <h3>{{ bipage.subtitle }}</h3>
-    {% endif %}
-
-    <div style='border:1px solid silver; height: 450px;'>
-        <div style='padding: 10px 10px 10px 10px;'>
-            {% for snippet in bipage.snippets.all %}
-
-            <img src="{{ snippet.image_cropped.url }}" width="{{ snippet.image_cropped.width }}" height="{{ snippet.image_cropped.height }}">
-
-            {% endfor %}
-        </div>
-    </div>
+    <h3>{{ bipage.subtitle }}</h3>
 
     {% block content %}
     {% endblock %}

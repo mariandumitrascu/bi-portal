@@ -597,9 +597,10 @@ class BipageAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(BipageAdminForm, self).__init__(*args, **kwargs)
 
-        # self.fields['embedded'].label = 'Embedded report'
-        self.fields['title'].widget = forms.TextInput(attrs={'size': '60'})
-        self.fields['subtitle'].widget = forms.TextInput(attrs={'size': '60'})
+        self.fields['name'].widget = forms.TextInput(attrs={'size': '28'})
+        # self.fields['ppt_page_layout'].widget = forms.Select(attrs={'size': '40'})
+        self.fields['title'].widget = forms.TextInput(attrs={'size': '70'})
+        self.fields['subtitle'].widget = forms.TextInput(attrs={'size': '70'})
         # self.fields['ppt_page_layout'].widget = forms.Select(attrs={'size': '40'})
 
 
@@ -631,7 +632,7 @@ class BipageAdmin(admin.ModelAdmin):
         (
             '',
             {
-                'fields': ['presentation', 'ppt_page_layout', 'layout_preview']
+                'fields': ['presentation', 'name', 'ppt_page_layout', 'layout_preview']
             },
         ),
         (
