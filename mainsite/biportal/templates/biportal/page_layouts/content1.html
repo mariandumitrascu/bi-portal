@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Guardian BI Portal</title>
+  <link href="{% static 'biportal/css/bootstrap.css' %}" rel="stylesheet">
+  <link href="{% static 'biportal/css/bootstrap-theme.css' %}" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container">
+    test from page layout
+    {% block content %}
+    {% endblock %}
+
+  </div>
+
+  <canvas id="canvas">
+  </canvas>
+</body>
+
+    {% block javascript %}
+    {% endblock %}
+    <script src="{% static 'biportal/js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'biportal/js/popper.min.js' %}"></script>
+    <script src="{% static 'biportal/js/bootstrap.js' %}"></script>
+
+</html>

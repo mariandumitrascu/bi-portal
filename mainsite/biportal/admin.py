@@ -23,6 +23,8 @@ from django.utils.crypto import get_random_string
 
 from sorl.thumbnail.admin import AdminImageMixin
 from PIL import Image
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 
 from .models import Presentation, Bipage, Snippet, SnippetHtml
 
@@ -596,14 +598,23 @@ class BipageAdminForm(forms.ModelForm):
         super(BipageAdminForm, self).__init__(*args, **kwargs)
 
         # self.fields['embedded'].label = 'Embedded report'
-        self.fields['name'].widget = forms.TextInput(attrs={'size': '60'})
+        self.fields['title'].widget = forms.TextInput(attrs={'size': '60'})
         self.fields['subtitle'].widget = forms.TextInput(attrs={'size': '60'})
         # self.fields['ppt_page_layout'].widget = forms.Select(attrs={'size': '40'})
+
+
+        # reference:
+        # https://github.com/django-crispy-forms/django-crispy-forms/issues/697
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-my-form'
+        self.helper.form_class = 'my-form'
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Submit'))
+
 
     class Meta:
         model = Bipage
         fields = '__all__'
-
 
 @admin.register(Bipage)
 class BipageAdmin(admin.ModelAdmin):
@@ -620,13 +631,13 @@ class BipageAdmin(admin.ModelAdmin):
         (
             '',
             {
-                'fields': [('presentation', 'ppt_page_layout', 'layout_preview')]
+                'fields': ['presentation', 'ppt_page_layout', 'layout_preview']
             },
         ),
         (
             '',
             {
-                'fields': [ ('name', 'subtitle',) ]
+                'fields': [ ('title', 'subtitle',) ]
             },
         ),
         (
@@ -671,6 +682,7 @@ class BipageAdmin(admin.ModelAdmin):
         context.update({'show_render_all_report_snippets': True})
         context.update({'show_export_ppt': True})
         context.update({'show_export_pdf': True})
+        context.update({'show_save_and_add_another': False})
         # context.update({'is_nav_sidebar_enabled': False})
         context.update({'show_presentation_nav': True})
         return super().render_change_form(request, context, *args, **kwargs)

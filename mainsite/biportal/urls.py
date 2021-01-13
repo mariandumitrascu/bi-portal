@@ -19,7 +19,7 @@ app_name = 'biportal'
 
 urlpatterns = [
     path('', views.home, name='home2'),
-    path('page/', views.presentation_page, name='presentation_page'),
+    path('<int:pk>/page/', views.presentation_page, name='presentation_page'),
 
     # path('', views.HomeListView.as_view(), name='home2'),
 

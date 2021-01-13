@@ -247,6 +247,13 @@ ppt_page_layout_choices = [
 class Bipage(models.Model):
 
     name = models.CharField(
+        max_length=100,
+        null = True,
+        blank = True,
+        verbose_name = 'Internal name'
+        )
+
+    title = models.CharField(
         max_length=200,
         null = True,
         blank = True,
@@ -309,9 +316,10 @@ class Bipage(models.Model):
 
     def page_preview(self):
         html = """
-        <iframe src="/bip/page/"
-        style="width:1200px; height:800px; border: 1px solid #111111;"></iframe>
-        """
+        <iframe src="/bip/{}/page/"
+        style="width:1200px; height:800px; border: 1px solid grey;"></iframe>
+        """.format(self.pk)
+
         return mark_safe(html)
 
     page_preview.short_description = ''

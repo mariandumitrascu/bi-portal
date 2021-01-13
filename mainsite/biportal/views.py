@@ -11,15 +11,12 @@ from django.views import generic
 from django.views.generic import CreateView, ListView, UpdateView, View
 from django.views.generic import TemplateView
 
-from .models import Snippet
+from .models import *
 from .forms import SnippetForm
 
 
 def home(request):
     return HttpResponse('Guardian BI Portal')
-
-def presentation_page(request):
-    return HttpResponse('Test presentation page')
 
 class HomePage(TemplateView):
     template_name = "index.html"
@@ -39,3 +36,18 @@ class HomePage(TemplateView):
 #         form = PhotoForm()
 #     return render(request, 'album/photo_list.html', {'form': form, 'photos': photos})
 
+
+
+def presentation_page(request, pk):
+    """Generate page layout view. It is loading a specific layout that is set as the Bipage property
+
+    Args:
+        request ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    bipage = get_object_or_404(Bipage, pk=pk)
+
+
+    return HttpResponse('Test presentation page: {}'.format(bipage.name))
