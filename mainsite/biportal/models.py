@@ -20,6 +20,7 @@ ppt_master_choices = [
     ('master1', 'Guardian Master PPT'),
 ]
 
+
 ###########################################################################################################
 class Presentation(models.Model):
 
@@ -114,6 +115,9 @@ class SnippetHtml(models.Model):
 
     def get_htmltext_as_markdown(self):
         return mark_safe(markdown(self.htmltext, safe_mode='escape'))
+
+        # return mark_safe(self.htmltext)
+        # return htmltext
 
     get_htmltext_as_markdown.short_description = 'Content preview'
 

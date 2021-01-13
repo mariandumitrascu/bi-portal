@@ -47,9 +47,18 @@
 
                 {% comment %} <a  onclick="return showAdminPopup(/admin/biportal/snippet/{{ snippet.pk }}/change/);" target=_blank> {% endcomment %}
                 {% comment %} <div onclick="return showAdminPopup(/admin/biportal/snippet/{{ snippet.pk }}/change/);"> {% endcomment %}
-                <img src="{{ snippet.image_cropped.url }}" width="{{ snippet.image_cropped.width }}" height="{{ snippet.image_cropped.height }}">
+                <img src="{{ snippet.image_cropped.url }}" height='420px'>
                 {% comment %} </div> {% endcomment %}
                 </a>
+                <br>
+                <a
+                    class="related-widget-wrapper-link add-related"
+                    href='/admin/biportal/snippet/{{ snippet.pk }}/change/?_popup=1'
+                    onclick="return showAdminPopup(/admin/biportal/snippet/{{ snippet.pk }}/change/?_popup=1);"
+                    target=_blank>
+                [edit]</a>
+
+
 
             {% endfor %}
         </div>

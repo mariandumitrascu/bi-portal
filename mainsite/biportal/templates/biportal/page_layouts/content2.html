@@ -18,7 +18,7 @@
 </head>
 
 <body>
-  <div class="container">
+  <div class="container" style="white-space: nowrap;">
 
     {% if bipage.title %}
         <h1>{{ bipage.title|replace_tokens }}</h1>
@@ -28,15 +28,70 @@
         <h3>{{ bipage.subtitle|replace_tokens }}</h3>
     {% endif %}
 
-    <div style='border:1px solid silver; height: 450px;'>
+    <div style='
+        {% comment %} position: relative; {% endcomment %}
+        left: 0px;
+        top: 0px;
+        border:1px solid silver;
+        height: 450px;
+        width: 460px;
+        display: inline;
+        float: left;'>
+
         <div style='padding: 10px 10px 10px 10px;'>
             {% for snippet in bipage.snippets.all %}
 
-            <img src="{{ snippet.image_cropped.url }}" width="{{ snippet.image_cropped.width }}" height="{{ snippet.image_cropped.height }}">
+            <a
+                class="related-widget-wrapper-link add-related"
+                href='/admin/biportal/snippet/{{ snippet.pk }}/change/?_popup=1'
+                onclick="return showAdminPopup(/admin/biportal/snippet/{{ snippet.pk }}/change/?_popup=1);"
+                target=_blank>
+                <img src='{{ snippet.image_cropped.url }}' width='440px'>
+            </a>
+            <br>
+            <a
+                class="related-widget-wrapper-link add-related"
+                href='/admin/biportal/snippet/{{ snippet.pk }}/change/?_popup=1'
+                onclick="return showAdminPopup(/admin/biportal/snippet/{{ snippet.pk }}/change/?_popup=1);"
+                target=_blank>
+            [edit]</a>
 
             {% endfor %}
         </div>
     </div>
+
+    <div style='
+        position: relative;
+        left: 10px;
+        {% comment %} top: 0px; {% endcomment %}
+        border:1px solid silver;
+        height: 450px;
+        width: 480px;
+        display: inline-block;
+        overflow: none;
+        float: left;
+        padding: 10px 10px 10px 10px;
+        '>
+
+        {% comment %} <div style='padding: 10px 10px 10px 10px;'> {% endcomment %}
+            {% for text in bipage.texts.all %}
+
+            {{ text.get_htmltext_as_markdown|replace_tokens }}
+
+            <a
+                class="related-widget-wrapper-link add-related"
+                href='/admin/biportal/snippethtml/{{ text.pk }}/change/?_popup=1'
+                onclick="return showAdminPopup('/admin/biportal/snippethtml/{{ text.pk }}/change/?_popup=1');"
+                target=_blank>
+            [edit]
+            </a>
+
+
+            {% endfor %}
+        {% comment %} </div> {% endcomment %}
+    </div>
+
+
 
     {% block content %}
     {% endblock %}
