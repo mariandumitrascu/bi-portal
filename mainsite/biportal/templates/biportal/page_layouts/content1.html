@@ -6,6 +6,7 @@
 <head>
   <meta charset="utf-8">
   <title>Guardian BI Portal</title>
+  <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "admin/css/base.css" %}{% endblock %}">
   <link href="{% static 'biportal/css/bootstrap.css' %}" rel="stylesheet">
   <link href="{% static 'biportal/css/bootstrap-theme.css' %}" rel="stylesheet">
   <style>
@@ -21,6 +22,8 @@
 
     {% if bipage.title %}
         <h1>{{ bipage.title|replace_tokens }}</h1>
+    {% else %}
+        <h1></h1>
     {% endif %}
 
     {% if bipage.subtitle %}
@@ -30,8 +33,23 @@
     <div style='border:1px solid silver; height: 450px;'>
         <div style='padding: 10px 10px 10px 10px;'>
             {% for snippet in bipage.snippets.all %}
+                {% comment %} <a
+                    href='/admin/biportal/snippet/{{ snippet.pk }}/change/?_popup=1'
+                    onclick="return showAdminPopup(/admin/biportal/snippet/{{ snippet.pk }}/change/);"
+                    target=_blank>
+                {% endcomment %}
+                <a
+                    class="related-widget-wrapper-link add-related" id="add_id_snippets"
+                    href='/admin/biportal/snippet/{{ snippet.pk }}/change/?_popup=1'
+                    onclick="return showAdminPopup(/admin/biportal/snippet/{{ snippet.pk }}/change/?_popup=1);"
+                    target=_blank>
 
-            <img src="{{ snippet.image_cropped.url }}" width="{{ snippet.image_cropped.width }}" height="{{ snippet.image_cropped.height }}">
+
+                {% comment %} <a  onclick="return showAdminPopup(/admin/biportal/snippet/{{ snippet.pk }}/change/);" target=_blank> {% endcomment %}
+                {% comment %} <div onclick="return showAdminPopup(/admin/biportal/snippet/{{ snippet.pk }}/change/);"> {% endcomment %}
+                <img src="{{ snippet.image_cropped.url }}" width="{{ snippet.image_cropped.width }}" height="{{ snippet.image_cropped.height }}">
+                {% comment %} </div> {% endcomment %}
+                </a>
 
             {% endfor %}
         </div>
@@ -45,6 +63,24 @@
   <canvas id="canvas">
   </canvas>
 </body>
+    <script>
+    const $ = django.jQuery;
+
+        function showAdminPopup(triggeringLink, name_regexp, add_popup) {
+            const name = triggeringLink.id.replace(name_regexp, '');
+            let href = triggeringLink.href;
+            if (add_popup) {
+                if (href.indexOf('?') === -1) {
+                    href += '?_popup=1';
+                } else {
+                    href += '&_popup=1';
+                }
+            }
+            const win = window.open(href, name, 'height=500,width=800,resizable=yes,scrollbars=yes');
+            win.focus();
+            return false;
+        }
+    </script>
 
     {% block javascript %}
     {% endblock %}

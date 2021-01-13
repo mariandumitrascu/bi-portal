@@ -18,11 +18,15 @@
 <body>
   <div class="container">
     <div style='position: absolute; top: 200px; left: 45px; width: 600px;'>
-    <h1>{{ bipage.title|replace_tokens }}</h1>
+        {% if bipage.title %}
+            <h1>{{ bipage.title|replace_tokens }}</h1>
+        {% endif %}
     </div>
 
     <div style='position: absolute; top: 350px; left: 45px; width: 500px;'>
-    <h3>{{ bipage.subtitle|replace_tokens }}</h3>
+        {% if bipage.subtitle %}
+            <h3>{{ bipage.subtitle|replace_tokens }}</h3>
+        {% endif %}
     </div>
 
 

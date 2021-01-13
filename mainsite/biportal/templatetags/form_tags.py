@@ -22,7 +22,8 @@ def input_class(bound_field):
 @register.filter(name='replace_tokens', is_safe=True)
 def replace_tokens(value):
     """Replace tokens"""
-    value = value.replace('{last year}', '2020')
-    value = value.replace('{current year}', '2021')
+    if value is not None:
+        value = value.replace('{last year}', '2020')
+        value = value.replace('{current year}', '2021')
 
     return value

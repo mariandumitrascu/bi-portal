@@ -70,7 +70,6 @@ class BipageInline(admin.TabularInline):
 ############################################################################################################
 ############################################################################################################
 
-
 class PresentatioAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(PresentatioAdminForm, self).__init__(*args, **kwargs)
@@ -171,12 +170,9 @@ class PresentationAdmin(admin.ModelAdmin):
             # Otherwise, use default behavior
             return super().response_post_save_change(request, obj)
 
-
-
 ###################################################################################################
 ###################################################################################################
 ###################################################################################################
-
 
 class SnippetAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -257,7 +253,6 @@ class SnippetAdmin(admin.ModelAdmin):
     # this is adding an extra action to the list of actions in the list form
     actions = ['render_all_reports_in_selected_snippets']
 
-
     # reference:
     # https://ilovedjango.com/django/admin/how-to-show-image-from-imagefield-in-django-admin-page/
     def report_rendered_preview(self, obj):
@@ -336,8 +331,6 @@ class SnippetAdmin(admin.ModelAdmin):
     # MD: moved to model
     # def render_button(self, obj):
     #     return mark_safe('<input type="submit" value="Render report" name="_render_report">')
-
-
 
 
     ##########################################################################################
@@ -467,7 +460,6 @@ class SnippetAdmin(admin.ModelAdmin):
             # sync_get_data = async_to_sync(render_report_02(), force_new_loop=True)
             # time.sleep(5)
 
-
             # asyncio.run(render_report_02())
             # async_to_sync(render_report_02(), force_new_loop=True)()
 
@@ -534,11 +526,8 @@ class SnippetAdmin(admin.ModelAdmin):
             form.save_m2m()
             return instance
 
-
-
 # admin.site.register(Presentation)
 # admin.site.register(Snippet)
-
 
 ############################################################################################################
 ############################################################################################################
@@ -582,16 +571,11 @@ async def render_report(url, filepath):
     # >>> {'width': 800, 'height': 600, 'deviceScaleFactor': 1}
     await browser.close()
 
-
-
-
-
 ############################################################################################################
 ############################################################################################################
 ############################################################################################################
 # admin.site.register(Bipage)
 # admin.site.register(SnippetHtml)
-
 
 class BipageAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -616,6 +600,8 @@ class BipageAdminForm(forms.ModelForm):
     class Meta:
         model = Bipage
         fields = '__all__'
+
+#######################################################################################################
 
 @admin.register(Bipage)
 class BipageAdmin(admin.ModelAdmin):
@@ -662,9 +648,6 @@ class BipageAdmin(admin.ModelAdmin):
                 'fields': [('ppt_file', 'pdf_file')]
             }
         ),
-
-
-
     ]
 
     # reference: hide it in the admin menu
@@ -674,7 +657,6 @@ class BipageAdmin(admin.ModelAdmin):
         Return empty perms dict thus hiding the model from admin index.
         """
         return {}
-
 
     def render_change_form(self, request, context, *args, **kwargs):
         """We need to update the context to show the button."""
@@ -688,6 +670,41 @@ class BipageAdmin(admin.ModelAdmin):
         context.update({'show_presentation_nav': True})
         return super().render_change_form(request, context, *args, **kwargs)
 
+    def response_post_save_change(self, request, obj):
+        """ Custom actiaons for bi page
+
+        Args:
+            request ([type]): [description]
+            obj ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
+        if '_export_ppt' in request.POST:
+
+            filename = 'Stewardship_Mock_Up_20201204.pptx'
+            file_in_media = 'generated_ppt/{}'.format(filename)
+            url = 'http://127.0.0.1:8888/media/generated_ppt/{}'.format(filename)
+            msg = 'The PPT was generated successsfuly. You can downlad it from <a href={} target=_blank>here</a>'.format(url)
+            msg = _(mark_safe(msg))
+            self.message_user(request, msg, messages.SUCCESS)
+
+            obj.ppt_file = file_in_media
+            obj.save()
+
+            post_url = "/admin/biportal/bipage/{}/change/".format(obj.pk)
+
+            return HttpResponseRedirect(post_url)
+
+        else:
+
+            return super().response_post_save_change(request, obj)
+
+    # def response_change(self, request, obj):
+    #     if '_export_ppt' in request.POST:
+    #         pass
+    #     else:
+    #         return super().response_change(request, obj)
 
 ############################################################################################################
 ############################################################################################################
