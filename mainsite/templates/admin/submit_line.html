@@ -10,7 +10,7 @@
 {% if show_render_all_report_snippets and original %}<input type="submit" value="{% translate 'Refresh snippets' %}" name="_render_snippets">{% endif %}
 {% if show_export_ppt and original %}<input type="submit" value="{% translate 'Export to PPT' %}" name="_export_ppt">{% endif %}
 {% if show_export_pdf and original %}<input type="submit" value="{% translate 'Export to PDF' %}" name="_export_pdf">{% endif %}
-{% if show_save_as_new %}<input type="submit" value="{% translate 'Save as new' %}" name="_saveasnew">{% endif %}
+{% if show_save_as_new %}<input type="submit" value="{% translate 'Duplicate' %}" name="_saveasnew">{% endif %}
 {% if show_save_and_add_another %}<input type="submit" value="{% translate 'Save and add another' %}" name="_addanother">{% endif %}
 {% if show_save_and_continue %}<input type="submit" value="{% if can_change %}{% translate 'Save and continue editing' %}{% else %}{% translate 'Save and view' %}{% endif %}" name="_continue">{% endif %}
 {% if show_close %}<a href="{% url opts|admin_urlname:'changelist' %}" class="closelink">{% translate 'Close' %}</a>{% endif %}

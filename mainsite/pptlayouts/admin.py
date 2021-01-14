@@ -113,7 +113,15 @@ class PPTPageLayouAdmin(admin.ModelAdmin):
 
     list_display = ['image_thumbnail_preview', 'name', 'master_layout', 'web_page_layout']
 
-    # extra = 1
+
+    # reference: hide it in the admin menu
+    # https://stackoverflow.com/questions/2431727/django-admin-hide-a-model
+    def get_model_perms(self, request):
+        """
+        Return empty perms dict thus hiding the model from admin index.
+        """
+        return {}
+
 
     def image_thumbnail_preview(self, obj):
         # return mark_safe("<img src='{}' />".format(self.image_thumbnail.url))

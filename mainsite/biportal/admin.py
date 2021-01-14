@@ -191,6 +191,8 @@ class SnippetAdmin(admin.ModelAdmin):
 
     form = SnippetAdminForm
 
+    save_on_top = True
+
     change_form_template = 'admin/change_form_snippets.html'
 
     ordering = ('created_at',)
@@ -247,6 +249,8 @@ class SnippetAdmin(admin.ModelAdmin):
     list_display_links = ['image_cropped_preview', 'name']
 
     search_fields = ['name', 'created_at']
+
+    save_as = True
 
     list_per_page = 5
 
