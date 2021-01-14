@@ -616,6 +616,8 @@ class BipageAdmin(admin.ModelAdmin):
 
     save_on_top = True
 
+    # save_as = True
+
     readonly_fields = ['presentation', 'layout_preview', 'page_preview']
 
     fieldsets = [
