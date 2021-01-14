@@ -32,6 +32,9 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
 
+    'admin_interface',  # reference: https://github.com/fabiocaccamo/django-admin-interface
+    'colorfield',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -146,7 +149,7 @@ TAGGIT_CASE_INSENSITIVE = True
 
 INTERNAL_IPS = ['127.0.0.1']
 
-X_FRAME_OPTIONS = 'ALLOW'
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
