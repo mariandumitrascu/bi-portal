@@ -700,11 +700,11 @@ class BipageAdmin(admin.ModelAdmin):
 
             return super().response_post_save_change(request, obj)
 
-    # def response_change(self, request, obj):
-    #     if '_export_ppt' in request.POST:
-    #         pass
-    #     else:
-    #         return super().response_change(request, obj)
+    def response_change(self, request, obj):
+        if '_export_ppt' in request.POST:
+            return self.response_post_save_change(request, obj)
+        else:
+            return super().response_change(request, obj)
 
 ############################################################################################################
 ############################################################################################################

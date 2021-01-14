@@ -33,22 +33,15 @@
     <div style='border:1px solid silver; height: 450px;'>
         <div style='padding: 10px 10px 10px 10px;'>
             {% for snippet in bipage.snippets.all %}
-                {% comment %} <a
-                    href='/admin/biportal/snippet/{{ snippet.pk }}/change/?_popup=1'
-                    onclick="return showAdminPopup(/admin/biportal/snippet/{{ snippet.pk }}/change/);"
-                    target=_blank>
-                {% endcomment %}
+
                 <a
                     class="related-widget-wrapper-link add-related" id="add_id_snippets"
                     href='/admin/biportal/snippet/{{ snippet.pk }}/change/?_popup=1'
                     onclick="return showAdminPopup(/admin/biportal/snippet/{{ snippet.pk }}/change/?_popup=1);"
                     target=_blank>
 
-
-                {% comment %} <a  onclick="return showAdminPopup(/admin/biportal/snippet/{{ snippet.pk }}/change/);" target=_blank> {% endcomment %}
-                {% comment %} <div onclick="return showAdminPopup(/admin/biportal/snippet/{{ snippet.pk }}/change/);"> {% endcomment %}
                 <img src="{{ snippet.image_cropped.url }}" height='420px'>
-                {% comment %} </div> {% endcomment %}
+
                 </a>
                 <br>
                 <a
