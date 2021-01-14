@@ -27,8 +27,8 @@
         <li><a href="{% url 'accounts:logout' %}" class="btn btn-simple">Log out</a></li>
         {% else %}
         {% comment %} <li><a href="{% url 'groups:all' %}" class="btn btn-simple">Groups</a></li> {% endcomment %}
-        <li><a href="{% url 'accounts:login' %}" class="btn btn-simple">Log in</a></li>
-        <li><a href="{% url 'accounts:signup' %}" class="btn btn-simple">Sign up</a></li>
+        <li><a href="/admin/login/?next=/admin/" class="btn btn-simple">Log in</a></li>
+        {% comment %} <li><a href="{% url 'accounts:signup' %}" class="btn btn-simple">Sign up</a></li> {% endcomment %}
         {% endif %}
       </ul>
 

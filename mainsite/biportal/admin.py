@@ -264,7 +264,6 @@ class SnippetAdmin(admin.ModelAdmin):
         #     height=obj.image_rendered.height
         #     ))
         return mark_safe("""
-
     <div class="modal fade" id="modalCrop">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -282,7 +281,6 @@ class SnippetAdmin(admin.ModelAdmin):
             </div>
         </div>
     </div>
-
         """.format(
             url = obj.image_rendered.url,
             width=obj.image_rendered.width,
@@ -317,7 +315,6 @@ class SnippetAdmin(admin.ModelAdmin):
 
 
         return html
-
 
     def image_rendered_preview(self, obj):
         return mark_safe("<img src={url} width={width} height={height} />".format(
@@ -378,6 +375,9 @@ class SnippetAdmin(admin.ModelAdmin):
             except:
                 pass
 
+        if '_render_report' in request.POST:
+            # this preventing creating the default message for save
+            return self.response_post_save_change(request, obj)
 
         return super().response_change(request, obj)
 
