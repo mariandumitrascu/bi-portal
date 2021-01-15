@@ -694,7 +694,6 @@ class BipageAdmin(admin.ModelAdmin):
                 title.text = replace_tokens(obj.title)
                 subtitle.text = replace_tokens(obj.subtitle)
 
-
             elif obj.ppt_page_layout == 'content1':
 
                 this_slide_layout = prs.slide_layouts[1]
@@ -711,15 +710,11 @@ class BipageAdmin(admin.ModelAdmin):
                 # subtitle.text = replace_tokens(obj.subtitle)
 
                 # for s in slide.shapes:
-
                 #     s.text = s.name
-
                 #     if s.name == 'Title 1':
                 #         s.text = replace_tokens(obj.title)
-
                 #     if s.name == 'Text Placeholder 3':
                 #         s.text = replace_tokens(obj.subtitle)
-
                 #     if s.name == 'Content Placeholder 2':
                 #         # main placeholder
                 #         # pass
