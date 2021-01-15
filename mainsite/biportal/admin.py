@@ -689,11 +689,10 @@ class BipageAdmin(admin.ModelAdmin):
             from pptx import Presentation
             from biportal.templatetags.form_tags import replace_tokens
 
+            master_file = 'ppt_master_files/guardian_master.pptx'
+
             # TODO: replace this with the master ppt file associated with the presentation
-            master_file = '{}/{}'.format(
-                settings.MEDIA_ROOT,
-                'ppt_master_files/guardian_master.pptx'
-            )
+            master_file = f'{ settings.MEDIA_ROOT }/{ master_file }'
 
             # initialize the ppt presentation object
             prs = Presentation(master_file)
@@ -702,13 +701,13 @@ class BipageAdmin(admin.ModelAdmin):
             # this is based on the layout set for this bipage object
 
             # we default to the first layout
-            title_slide_layout = prs.slide_layouts[0]
+            this_slide_layout = prs.slide_layouts[0]
             if obj.ppt_page_layout == 'header':
 
-                title_slide_layout = prs.slide_layouts[0]
+                this_slide_layout = prs.slide_layouts[0]
 
                 # add a slide to the presentation
-                slide = prs.slides.add_slide(title_slide_layout)
+                slide = prs.slides.add_slide(this_slide_layout)
 
                 # get references to the title and subtitle
                 title = slide.shapes.title
@@ -721,34 +720,86 @@ class BipageAdmin(admin.ModelAdmin):
 
             elif obj.ppt_page_layout == 'content1':
 
-                title_slide_layout = prs.slide_layouts[1]
+                this_slide_layout = prs.slide_layouts[1]
                 # add a slide to the presentation
-                slide = prs.slides.add_slide(title_slide_layout)
+                slide = prs.slides.add_slide(this_slide_layout)
 
                 # get references to the title and subtitle
                 title = slide.shapes.title
-                subtitle = slide.placeholders[1]
+                # subtitle = slide.placeholders[0]
+                # subtitle = slide.shapes.subtitle
 
                 # set the values of title and subtitle to this bipage title and subtitle
                 title.text = replace_tokens(obj.title)
-                subtitle.text = replace_tokens(obj.subtitle)
+                # subtitle.text = replace_tokens(obj.subtitle)
 
+                # for s in slide.shapes:
 
+                #     s.text = s.name
+
+                #     if s.name == 'Title 1':
+                #         s.text = replace_tokens(obj.title)
+
+                #     if s.name == 'Text Placeholder 3':
+                #         s.text = replace_tokens(obj.subtitle)
+
+                #     if s.name == 'Content Placeholder 2':
+                #         # main placeholder
+                #         # pass
+                #         # s.text = replace_tokens(obj.subtitle)
+                #         s.add_picture('/Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/mainsite/media/image_cropped/2021-1-11_46OqBEruye4yfJD4.png', 0, 0)
+
+                # for slideshape in slide.
+
+                slide.shapes.add_picture('/Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/mainsite/media/image_cropped/2021-1-11_46OqBEruye4yfJD4.png', 100, 50)
+
+                for shape in slide.placeholders:
+                    shape.text = f'{shape.placeholder_format.idx}:{shape.name}'
+
+                slide.placeholders[0].text = replace_tokens(obj.title)
+                slide.placeholders[13].text = replace_tokens(obj.subtitle)
+
+                # allz = obj.snippets.all()[0]
+
+                # slide.placeholders[1].text = obj.snippets.all()[0].image_cropped.url
+                # slide.placeholders[1].add_picture('/Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/mainsite/media/image_cropped/2021-1-11_46OqBEruye4yfJD4.png')
+                # slide.shapes['Text Placeholder 3'].text =
 
             elif obj.ppt_page_layout == 'content2':
 
-                title_slide_layout = prs.slide_layouts[2]
+                this_slide_layout = prs.slide_layouts[2]
 
                 # add a slide to the presentation
-                slide = prs.slides.add_slide(title_slide_layout)
+                slide = prs.slides.add_slide(this_slide_layout)
 
                 # get references to the title and subtitle
                 title = slide.shapes.title
                 subtitle = slide.placeholders[1]
 
+                for s in slide.shapes:
+
+                    s.text = s.name
+
+                    if s.name == 'Title 1':
+                        s.text = replace_tokens(obj.title)
+
+                    if s.name == 'Text Placeholder 5':
+                        s.text = replace_tokens(obj.subtitle)
+
+                    if s.name == 'Content Placeholder 2':
+                        pass
+
+                    if s.name == 'Content Placeholder 3':
+                        pass
+
+
+
+
+
+
                 # set the values of title and subtitle to this bipage title and subtitle
-                title.text = replace_tokens(obj.title)
-                subtitle.text = replace_tokens(obj.subtitle)
+                # title.text = replace_tokens(obj.title)
+                # subtitle.text = replace_tokens(obj.subtitle)
 
 
 
