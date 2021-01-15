@@ -759,7 +759,7 @@ class BipageAdmin(admin.ModelAdmin):
                 for shape in slide.placeholders:
                     shape.text = f'{shape.placeholder_format.idx}:{shape.name}'
 
-                if obj.snippets.all()[0]:
+                if obj.snippets.all():
                     picture_path = obj.snippets.all()[0].image_cropped.path
 
                     slide.shapes.add_picture(
@@ -772,8 +772,6 @@ class BipageAdmin(admin.ModelAdmin):
                 slide.placeholders[0].text = replace_tokens(obj.title)
                 slide.placeholders[13].text = replace_tokens(obj.subtitle)
 
-                # allz = obj.snippets.all()[0]
-
                 # slide.placeholders[1].text = obj.snippets.all()[0].image_cropped.url
                 # slide.placeholders[1].add_picture('/Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/mainsite/media/image_cropped/2021-1-11_46OqBEruye4yfJD4.png')
                 # slide.shapes['Text Placeholder 3'].text =
@@ -781,39 +779,29 @@ class BipageAdmin(admin.ModelAdmin):
             elif obj.ppt_page_layout == 'content2':
 
                 this_slide_layout = prs.slide_layouts[2]
-
                 # add a slide to the presentation
                 slide = prs.slides.add_slide(this_slide_layout)
 
                 # get references to the title and subtitle
                 title = slide.shapes.title
-                subtitle = slide.placeholders[1]
-
-                for s in slide.shapes:
-
-                    s.text = s.name
-
-                    if s.name == 'Title 1':
-                        s.text = replace_tokens(obj.title)
-
-                    if s.name == 'Text Placeholder 5':
-                        s.text = replace_tokens(obj.subtitle)
-
-                    if s.name == 'Content Placeholder 2':
-                        pass
-
-                    if s.name == 'Content Placeholder 3':
-                        pass
-
-
-
-
-
 
                 # set the values of title and subtitle to this bipage title and subtitle
-                # title.text = replace_tokens(obj.title)
-                # subtitle.text = replace_tokens(obj.subtitle)
+                title.text = replace_tokens(obj.title)
 
+                for shape in slide.placeholders:
+                    shape.text = f'{shape.placeholder_format.idx}:{shape.name}'
+
+                if obj.snippets.all():
+                    picture_path = obj.snippets.all()[0].image_cropped.path
+
+                    slide.shapes.add_picture(
+                        picture_path,
+                        Inches(0.5),
+                        Inches(1.5),
+                        height = Inches(5.0))
+
+                slide.placeholders[0].text = replace_tokens(obj.title)
+                slide.placeholders[13].text = replace_tokens(obj.subtitle)
 
 
             # save the presentation in media folder
