@@ -29,12 +29,9 @@ from .models import Presentation, Bipage, Snippet, SnippetHtml
 
 # references:
 # for sorl.thumbnail: https://sorl-thumbnail.readthedocs.io/en/latest/examples.html
-
 ############################################################################################################
 ############################################################################################################
 ############################################################################################################
-
-# class BipageInline(admin.StackedInline):
 class BipageInline(admin.TabularInline):
     model = Bipage
     show_change_link = True
@@ -63,11 +60,9 @@ class BipageInline(admin.TabularInline):
         """, instance.pk)
 
         return html
-
 ############################################################################################################
 ############################################################################################################
 ############################################################################################################
-
 class PresentatioAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(PresentatioAdminForm, self).__init__(*args, **kwargs)
@@ -78,7 +73,6 @@ class PresentatioAdminForm(forms.ModelForm):
     class Meta:
         model = Presentation
         fields = '__all__'
-
 @admin.register(Presentation)
 class PresentationAdmin(admin.ModelAdmin):
 
@@ -167,11 +161,9 @@ class PresentationAdmin(admin.ModelAdmin):
 
             # Otherwise, use default behavior
             return super().response_post_save_change(request, obj)
-
 ###################################################################################################
 ###################################################################################################
 ###################################################################################################
-
 class SnippetAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SnippetAdminForm, self).__init__(*args, **kwargs)
@@ -181,10 +173,8 @@ class SnippetAdminForm(forms.ModelForm):
     class Meta:
         model = Snippet
         fields = '__all__'
-
 ##################################################################################################
 @admin.register(Snippet)
-# class SnippetAdmin(AdminImageMixin, admin.ModelAdmin):
 class SnippetAdmin(admin.ModelAdmin):
 
     form = SnippetAdminForm
@@ -514,17 +504,13 @@ class SnippetAdmin(admin.ModelAdmin):
             instance.save()
             form.save_m2m()
             return instance
-
 # admin.site.register(Presentation)
 # admin.site.register(Snippet)
-
 ############################################################################################################
 ############################################################################################################
 ############################################################################################################
-
 # TODO: should be moved to it's own class
 from pyppeteer import launch
-
 async def render_report(url, filepath):
 
     # browser = await launch()
@@ -558,13 +544,11 @@ async def render_report(url, filepath):
     print(dimensions)
     # >>> {'width': 800, 'height': 600, 'deviceScaleFactor': 1}
     await browser.close()
-
 ############################################################################################################
 ############################################################################################################
 ############################################################################################################
 # admin.site.register(Bipage)
 # admin.site.register(SnippetHtml)
-
 class BipageAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(BipageAdminForm, self).__init__(*args, **kwargs)
@@ -588,9 +572,7 @@ class BipageAdminForm(forms.ModelForm):
     class Meta:
         model = Bipage
         fields = '__all__'
-
 #######################################################################################################
-
 @admin.register(Bipage)
 class BipageAdmin(admin.ModelAdmin):
 
@@ -662,11 +644,9 @@ class BipageAdmin(admin.ModelAdmin):
 
     def response_post_save_change(self, request, obj):
         """ Custom actiaons for bi page
-
         Args:
             request ([type]): [description]
             obj ([type]): [description]
-
         Returns:
             [type]: [description]
         """
@@ -833,11 +813,9 @@ class BipageAdmin(admin.ModelAdmin):
             return self.response_post_save_change(request, obj)
         else:
             return super().response_change(request, obj)
-
 ############################################################################################################
 ############################################################################################################
 ############################################################################################################
-
 class SnippetHtmlForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SnippetHtmlForm, self).__init__(*args, **kwargs)
@@ -848,7 +826,6 @@ class SnippetHtmlForm(forms.ModelForm):
     class Meta:
         model = SnippetHtml
         fields = '__all__'
-
 #####################################################################################################
 @admin.register(SnippetHtml)
 class SnippetHtmlAdmin(admin.ModelAdmin):
