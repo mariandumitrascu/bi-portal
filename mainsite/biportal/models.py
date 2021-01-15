@@ -20,7 +20,6 @@ ppt_master_choices = [
     ('master1', 'Guardian Master PPT'),
 ]
 
-
 ###########################################################################################################
 class Presentation(models.Model):
 
@@ -97,7 +96,6 @@ class Presentation(models.Model):
         verbose_name_plural = 'Presentations'
         ordering = ["-created_at"]
 
-
 ###########################################################################################################
 class SnippetHtml(models.Model):
     name = models.CharField(
@@ -128,7 +126,6 @@ class SnippetHtml(models.Model):
     class Meta:
         verbose_name = 'HTML Text'
         verbose_name_plural = 'HTML Texts'
-
 
 ###########################################################################################################
 class Snippet(models.Model):
@@ -240,7 +237,6 @@ class Snippet(models.Model):
     class Meta:
         verbose_name = 'snippet'
         verbose_name_plural = 'snippets'
-
 
 ###########################################################################################################
 ppt_page_layout_choices = [

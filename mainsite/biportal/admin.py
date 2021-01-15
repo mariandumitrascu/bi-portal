@@ -20,7 +20,6 @@ from asgiref.sync import sync_to_async
 from asgiref.sync import async_to_sync
 from django.utils.crypto import get_random_string
 
-
 from sorl.thumbnail.admin import AdminImageMixin
 from PIL import Image
 from crispy_forms.helper import FormHelper
@@ -30,7 +29,6 @@ from .models import Presentation, Bipage, Snippet, SnippetHtml
 
 # references:
 # for sorl.thumbnail: https://sorl-thumbnail.readthedocs.io/en/latest/examples.html
-
 
 ############################################################################################################
 ############################################################################################################
@@ -333,7 +331,6 @@ class SnippetAdmin(admin.ModelAdmin):
     # def render_button(self, obj):
     #     return mark_safe('<input type="submit" value="Render report" name="_render_report">')
 
-
     ##########################################################################################
     # default created_by user with curent user
     # overwrite get_changeform_initial_data
@@ -396,8 +393,6 @@ class SnippetAdmin(admin.ModelAdmin):
             # obj is the model data
             # do something with obj
 
-
-
             # reference: saving image file to django ImageField
             # https://stackoverflow.com/questions/1308386/programmatically-saving-image-to-django-imagefield
             # https://stackoverflow.com/questions/13393191/programmatically-add-file-to-django-imagefield
@@ -415,19 +410,10 @@ class SnippetAdmin(admin.ModelAdmin):
             if obj.embedded:
                 url = obj.embedded
 
-
-            # # tornado.platform.asyncio
             # # asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
             # loop = asyncio.new_event_loop()
             # asyncio.set_event_loop(loop)
             # asyncio.get_event_loop().run_until_complete(render_report(url, filepath))
-
-            # tornado.platform.asyncio
-            # tornado.platform.asyncio.set_event_loop_policy(tornado.platform.asyncio.WindowsProactorEventLoopPolicy())
-            # loop = tornado.platform.asyncio.new_event_loop()
-            # tornado.platform.asyncio.set_event_loop(loop)
-            # tornado.platform.asyncio.get_event_loop().run_until_complete(render_report_02())
-
 
             rendered_ok = False
             file_in_media = ''
@@ -508,7 +494,6 @@ class SnippetAdmin(admin.ModelAdmin):
             # Otherwise, use default behavior
             return super().response_post_save_change(request, obj)
 
-
         # reference:
         # https://docs.djangoproject.com/en/3.1/topics/forms/modelforms/
         # https://stackoverflow.com/questions/4670783/make-the-user-in-a-model-default-to-the-current-user
@@ -539,7 +524,6 @@ class SnippetAdmin(admin.ModelAdmin):
 
 # TODO: should be moved to it's own class
 from pyppeteer import launch
-
 
 async def render_report(url, filepath):
 
@@ -688,18 +672,104 @@ class BipageAdmin(admin.ModelAdmin):
         """
         if '_export_ppt' in request.POST:
 
-            filename = 'Stewardship_Mock_Up_20201204.pptx'
-            file_in_media = 'generated_ppt/{}'.format(filename)
-            url = 'http://127.0.0.1:8888/media/generated_ppt/{}'.format(filename)
-            msg = 'The PPT was generated successsfuly. You can downlad it from <a href={} target=_blank>here</a>'.format(url)
+            # logic to create a ppt out of the current bipage
+            # TODO: move this to the model class, and invoke model method here
+
+            # generate a filename for the ppt
+            uid = get_random_string(length=16, allowed_chars=u'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
+            date = datetime.datetime.now()
+            result = '%s-%s-%s-%s-%s-%s_%s' % (date.year, date.month, date.day, date.hour, date.minute, date.second, uid)
+            filepath = "{}/generated_ppt/{}.pptx".format(
+                settings.MEDIA_ROOT,
+                result
+            )
+            file_in_media = 'generated_ppt/{}.pptx'.format(result)
+
+            # core logic
+            from pptx import Presentation
+            from biportal.templatetags.form_tags import replace_tokens
+
+            # TODO: replace this with the master ppt file associated with the presentation
+            master_file = '{}/{}'.format(
+                settings.MEDIA_ROOT,
+                'ppt_master_files/guardian_master.pptx'
+            )
+
+            # initialize the ppt presentation object
+            prs = Presentation(master_file)
+
+            # get the slide layout
+            # this is based on the layout set for this bipage object
+
+            # we default to the first layout
+            title_slide_layout = prs.slide_layouts[0]
+            if obj.ppt_page_layout == 'header':
+
+                title_slide_layout = prs.slide_layouts[0]
+
+                # add a slide to the presentation
+                slide = prs.slides.add_slide(title_slide_layout)
+
+                # get references to the title and subtitle
+                title = slide.shapes.title
+                subtitle = slide.placeholders[1]
+
+                # set the values of title and subtitle to this bipage title and subtitle
+                title.text = replace_tokens(obj.title)
+                subtitle.text = replace_tokens(obj.subtitle)
+
+
+            elif obj.ppt_page_layout == 'content1':
+
+                title_slide_layout = prs.slide_layouts[1]
+                # add a slide to the presentation
+                slide = prs.slides.add_slide(title_slide_layout)
+
+                # get references to the title and subtitle
+                title = slide.shapes.title
+                subtitle = slide.placeholders[1]
+
+                # set the values of title and subtitle to this bipage title and subtitle
+                title.text = replace_tokens(obj.title)
+                subtitle.text = replace_tokens(obj.subtitle)
+
+
+
+            elif obj.ppt_page_layout == 'content2':
+
+                title_slide_layout = prs.slide_layouts[2]
+
+                # add a slide to the presentation
+                slide = prs.slides.add_slide(title_slide_layout)
+
+                # get references to the title and subtitle
+                title = slide.shapes.title
+                subtitle = slide.placeholders[1]
+
+                # set the values of title and subtitle to this bipage title and subtitle
+                title.text = replace_tokens(obj.title)
+                subtitle.text = replace_tokens(obj.subtitle)
+
+
+
+            # save the presentation in media folder
+            prs.save(filepath)
+
+
+            # message the user with the link to the generated file
+            # TODO: replace hardcoded base url (127.0.0.1)
+            url_to_file = 'http://127.0.0.1:8888/media/generated_ppt/{}.pptx'.format(result)
+            msg = 'The PowerPoint for this page was generated successsfuly. You can downlad it from <a href={} target=_blank>here</a>'.format(url_to_file)
             msg = _(mark_safe(msg))
             self.message_user(request, msg, messages.SUCCESS)
 
             obj.ppt_file = file_in_media
             obj.save()
 
+            # url to the edit page of this layout page
             post_url = "/admin/biportal/bipage/{}/change/".format(obj.pk)
 
+            # redirect to the edit view of curent bipage
             return HttpResponseRedirect(post_url)
 
         else:
