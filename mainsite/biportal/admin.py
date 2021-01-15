@@ -687,6 +687,11 @@ class BipageAdmin(admin.ModelAdmin):
 
             # core logic
             from pptx import Presentation
+            from pptx.chart.data import CategoryChartData
+            from pptx.enum.chart import XL_CHART_TYPE
+            from pptx.chart.data import ChartData
+            from pptx.util import Inches
+
             from biportal.templatetags.form_tags import replace_tokens
 
             master_file = 'ppt_master_files/guardian_master.pptx'
@@ -751,10 +756,18 @@ class BipageAdmin(admin.ModelAdmin):
 
                 # for slideshape in slide.
 
-                slide.shapes.add_picture('/Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/mainsite/media/image_cropped/2021-1-11_46OqBEruye4yfJD4.png', 100, 50)
-
                 for shape in slide.placeholders:
                     shape.text = f'{shape.placeholder_format.idx}:{shape.name}'
+
+                if obj.snippets.all()[0]:
+                    picture_path = obj.snippets.all()[0].image_cropped.path
+
+                    slide.shapes.add_picture(
+                        picture_path,
+                        Inches(0.5),
+                        Inches(1.5),
+                        height = Inches(5.0))
+
 
                 slide.placeholders[0].text = replace_tokens(obj.title)
                 slide.placeholders[13].text = replace_tokens(obj.subtitle)
