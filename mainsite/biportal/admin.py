@@ -2,9 +2,6 @@ import os, time, uuid, sys
 from urllib.parse import quote as urlquote
 import asyncio
 import datetime
-# import tornado
-# import tornado.platform
-# import tornado.platform.asyncio
 
 from django.contrib import admin
 from django.utils.html import mark_safe
@@ -305,7 +302,6 @@ class SnippetAdmin(admin.ModelAdmin):
         except:
             html = ""
 
-
         return html
 
     def image_rendered_preview(self, obj):
@@ -433,8 +429,6 @@ class SnippetAdmin(admin.ModelAdmin):
                 # sys.exc_info()[0]
                 raise
 
-
-
             # # reference:
             # # https://docs.djangoproject.com/en/3.1/topics/async/
             # sync_get_data = async_to_sync(render_report_02(), force_new_loop=True)
@@ -559,7 +553,6 @@ class BipageAdminForm(forms.ModelForm):
         self.fields['subtitle'].widget = forms.TextInput(attrs={'size': '70'})
         # self.fields['ppt_page_layout'].widget = forms.Select(attrs={'size': '40'})
 
-
         # reference:
         # https://github.com/django-crispy-forms/django-crispy-forms/issues/697
         self.helper = FormHelper()
@@ -567,7 +560,6 @@ class BipageAdminForm(forms.ModelForm):
         self.helper.form_class = 'my-form'
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submit', 'Submit'))
-
 
     class Meta:
         model = Bipage
@@ -748,7 +740,6 @@ class BipageAdmin(admin.ModelAdmin):
                         Inches(1.5),
                         height = Inches(5.0))
 
-
                 slide.placeholders[0].text = replace_tokens(obj.title)
                 slide.placeholders[13].text = replace_tokens(obj.subtitle)
 
@@ -783,10 +774,8 @@ class BipageAdmin(admin.ModelAdmin):
                 slide.placeholders[0].text = replace_tokens(obj.title)
                 slide.placeholders[13].text = replace_tokens(obj.subtitle)
 
-
             # save the presentation in media folder
             prs.save(filepath)
-
 
             # message the user with the link to the generated file
             # TODO: replace hardcoded base url (127.0.0.1)
