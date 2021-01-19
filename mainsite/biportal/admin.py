@@ -767,7 +767,7 @@ class BipageAdmin(admin.ModelAdmin):
                         height = Inches(5.0))
 
                 slide.placeholders[0].text = replace_tokens(obj.title)
-                slide.placeholders[13].text = replace_tokens(obj.subtitle)
+                slide.placeholders[15].text = replace_tokens(obj.subtitle)
 
             # save the presentation in media folder
             prs.save(filepath)
