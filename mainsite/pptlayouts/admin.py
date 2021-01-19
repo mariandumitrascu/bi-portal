@@ -8,13 +8,7 @@ from sorl.thumbnail.admin import AdminImageMixin
 from sorl.thumbnail import get_thumbnail
 from sorl.thumbnail import ImageField
 
-
-
 from .models import PPTMasterLayout, PPTPageLayout
-
-
-
-
 
 class PPTPageLayoutInline(admin.TabularInline):
     model = PPTPageLayout
@@ -44,9 +38,6 @@ class PPTPageLayoutInline(admin.TabularInline):
         # return format_html(u'<a href="{}">Edit: {}</a>', '/admin/bipage', instance.title)
         # return format_html(u'<a href="{}">Edit</a>', '/admin/pptlayouts/pptpagelayout/1')
         return format_html(u'<a href="/admin/pptlayouts/pptpagelayout/{}/change/">Edit</a>', instance.pk)
-
-
-
 
 class MasterLayoutAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -99,8 +90,6 @@ class PPTMasterLayoutAdmin(admin.ModelAdmin):
 ########################################################################################
 ########################################################################################
 ########################################################################################
-
-
 
 # admin.site.register(PPTPageLayout)
 @admin.register(PPTPageLayout)

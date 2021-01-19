@@ -742,6 +742,8 @@ class BipageAdmin(admin.ModelAdmin):
                 # slide.placeholders[1].add_picture('/Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/mainsite/media/image_cropped/2021-1-11_46OqBEruye4yfJD4.png')
                 # slide.shapes['Text Placeholder 3'].text =
 
+
+
             elif obj.ppt_page_layout == 'content2':
 
                 this_slide_layout = prs.slide_layouts[2]

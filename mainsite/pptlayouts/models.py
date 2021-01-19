@@ -66,6 +66,7 @@ web_page_layout_choices = [
     ('header', 'Header Page'),
     ('content1', 'Content With 1 Placeholder'),
     ('content2', 'Content With 2 Columns'),
+    ('content3', 'Content With 3 Columns'),
 ]
 class PPTPageLayout(models.Model):
 

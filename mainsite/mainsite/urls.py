@@ -30,8 +30,8 @@ urlpatterns = [
     path('admin/',      admin.site.urls,                    name='admin'),
 ]
 
-admin.sites.AdminSite.site_header = 'Guardian Report Rendering Portal'
-admin.sites.AdminSite.site_title = 'Guardian BI Portal'
+admin.sites.AdminSite.site_header = 'Guardian Report Rendering Facility'
+admin.sites.AdminSite.site_title = 'Guardian Report Rendering Facility'
 
 
 if settings.DEBUG:

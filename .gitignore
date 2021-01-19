@@ -256,5 +256,8 @@ artifacts-st*
 prod*
 *.zip
 *.code-workspace
+*.png
+*.pptx
+
 
 _commands.sh
