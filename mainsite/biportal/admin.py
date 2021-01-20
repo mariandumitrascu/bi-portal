@@ -178,7 +178,7 @@ class SnippetAdmin(admin.ModelAdmin):
 
     save_on_top = True
 
-    change_form_template = 'admin/change_form_snippets.html'
+    change_form_template = 'admin/change_form_snippets_test.html'
 
     ordering = ('created_at',)
 
