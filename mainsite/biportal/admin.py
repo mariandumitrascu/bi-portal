@@ -776,7 +776,7 @@ class BipageAdmin(admin.ModelAdmin):
 
             # message the user with the link to the generated file
             # TODO: replace hardcoded base url (127.0.0.1)
-            url_to_file = 'http://127.0.0.1:8888/media/generated_ppt/{}.pptx'.format(result)
+            url_to_file = '/media/generated_ppt/{}.pptx'.format(result)
             msg = 'The PowerPoint for this page was generated successsfuly. You can downlad it from <a href={} target=_blank>here</a>'.format(url_to_file)
             msg = _(mark_safe(msg))
             self.message_user(request, msg, messages.SUCCESS)
@@ -833,8 +833,5 @@ class SnippetHtmlAdmin(admin.ModelAdmin):
         Return empty perms dict thus hiding the model from admin index.
         """
         return {}
-
-
-
 
 
