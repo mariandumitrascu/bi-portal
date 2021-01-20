@@ -16,13 +16,14 @@ from django.conf import settings
 from asgiref.sync import sync_to_async
 from asgiref.sync import async_to_sync
 from django.utils.crypto import get_random_string
+from django.shortcuts import get_object_or_404, redirect, render
 
 from sorl.thumbnail.admin import AdminImageMixin
 from PIL import Image
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 
-from .models import Presentation, Bipage, Snippet, SnippetHtml
+from .models import *
 
 # references:
 # for sorl.thumbnail: https://sorl-thumbnail.readthedocs.io/en/latest/examples.html
@@ -121,6 +122,7 @@ class PresentationAdmin(admin.ModelAdmin):
         pass
         # queryset.update(status='p')
 
+    # change the context before the change form is rendered
     def render_change_form(self, request, context, *args, **kwargs):
         """We need to update the context to show the button."""
 
@@ -178,7 +180,7 @@ class SnippetAdmin(admin.ModelAdmin):
 
     save_on_top = True
 
-    change_form_template = 'admin/change_form_snippets_test.html'
+    change_form_template = 'admin/change_form_snippets.html'
 
     ordering = ('created_at',)
 
@@ -237,7 +239,7 @@ class SnippetAdmin(admin.ModelAdmin):
 
     save_as = True
 
-    list_per_page = 5
+    list_per_page = 10
 
     # this is adding an extra action to the list of actions in the list form
     actions = ['render_all_reports_in_selected_snippets']
@@ -286,7 +288,7 @@ class SnippetAdmin(admin.ModelAdmin):
             pass
 
         html = """
-        <div id='snippet_preview'>
+        <div id='snippet_preview' style='overflow: hidden'>
             <img src={url} />
         </div>
         """.format(url = url,)
@@ -311,25 +313,70 @@ class SnippetAdmin(admin.ModelAdmin):
             height=obj.image_rendered.height
             ))
 
-    # method that acts like a field
-    # this adds a button to render the embedded report as an image
-    # MD: moved to model
-    # def render_button(self, obj):
-    #     return mark_safe('<input type="submit" value="Render report" name="_render_report">')
-
     ##########################################################################################
     # default created_by user with curent user
     # overwrite get_changeform_initial_data
+    # called before the add form is rendered
     def get_changeform_initial_data(self, request):
         get_data = super(SnippetAdmin, self).get_changeform_initial_data(request)
         get_data['created_by'] = request.user.pk
         return get_data
+
+    # augment the request object before rendering add form
+    # reference: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#django.contrib.admin.ModelAdmin.change_view
+    def add_view(self, request, form_url='', extra_context=None):
+
+
+        # set the default position and dimension of the cropping selection
+        extra_context = {
+            'xx': 100,
+            'yy': 50,
+            'hh': 240,
+            'ww': 240,
+        }
+
+        return super().add_view(
+            request, form_url, extra_context=extra_context
+        )
+
+    # augment the request object before rendering change form
+    # reference: https://docs.djangoproject.com/en/dev/ref/contrib/admin/#django.contrib.admin.ModelAdmin.change_view
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        # extra_context = extra_context or {}
+        # extra_context['osm_data'] = self.get_osm_info()
+
+        # obj = Snippet.all
+        obj = get_object_or_404(Snippet, pk=object_id)
+
+        extra_context = {
+            'xx': obj.x,
+            'yy': obj.y,
+            'hh': obj.h,
+            'ww': obj.w,
+        }
+
+        return super().change_view(
+            request, object_id, form_url, extra_context=extra_context,
+        )
+
+
+
+    # change the context before the change form is rendered
+    def render_change_form(self, request, context, *args, **kwargs):
+        """We need to update the context to show the button."""
+
+        # add a new key to the context
+        return super().render_change_form(request, context, *args, **kwargs)
 
     # code behind the extra action
     def render_all_reports_in_selected_snippets(self, request, queryset):
         pass
         # queryset.update(status='p')
 
+    # handle button sumbissions
+    # overwrite default behavior if you want to change the message
+    # after submission
+    # obj is the data
     def response_change(self, request, obj):
 
         if '_continue' in request.POST or '_save' in request.POST:
@@ -368,7 +415,9 @@ class SnippetAdmin(admin.ModelAdmin):
 
         return super().response_change(request, obj)
 
-    # one way to modify data when pressing a custom action
+    # handle button submissions too
+    # called after response_change
+    # obj is the data
     def response_post_save_change(self, request, obj):
         """This method is called by `self.changeform_view()` when the form
         was submitted successfully and should return an HttpResponse.
@@ -498,6 +547,7 @@ class SnippetAdmin(admin.ModelAdmin):
             instance.save()
             form.save_m2m()
             return instance
+
 # admin.site.register(Presentation)
 # admin.site.register(Snippet)
 ############################################################################################################

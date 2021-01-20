@@ -5,49 +5,12 @@
 
 
 {% block javascript %}
+<script>
 
- <style>
-    @keyframes spinner {
-        0% {
-            transform: translate3d(-50%, -50%, 0) rotate(0deg);
-        }
-        100% {
-             transform: translate3d(-50%, -50%, 0) rotate(360deg);
-        }
-    }
-    .spinner {
-        // The height here is just for demo purposes
-        height: 100vh;
-        opacity: 1;
-        position: relative;
-        transition: opacity linear 0.1s;
-        &::before {
-            animation: 2s linear infinite spinner;
-            border: solid 3px #eee;
-            border-bottom-color: #EF6565;
-            border-radius: 50%;
-            content: "";
-            height: 40px;
-            left: 50%;
-            opacity: inherit;
-            position: absolute;
-            top: 50%;
-            transform: translate3d(-50%, -50%, 0);
-            transform-origin: center;
-            width: 40px;
-            will-change: transform;
-        }
-    }
-
-    </style>
-
-
-
-
-  <script>
 
 
     $(function () {
+
 
       /* SCRIPT TO OPEN THE MODAL WITH THE PREVIEW */
       /*
@@ -96,6 +59,8 @@
             scalable: false,
             preview: '#snippet_preview',
             data:{
+                    x: 20,
+                    y: 200,
                     width: 240,
                     height:  240,
                 },
@@ -103,7 +68,16 @@
             ready: function () {
                 $image.cropper("setCanvasData", canvasData);
                 $image.cropper("setCropBoxData", cropBoxData);
-          }
+
+            },
+
+            crop: function(event) {
+              //console.log(event.x);
+              $("#id_x").val(event.x);
+              $("#id_y").val(event.y);
+              $("#id_h").val(event.height);
+              $("#id_w").val(event.width);
+            }
         })
 
         var cropData = $image.cropper("getData");
@@ -118,7 +92,7 @@
       });
 
     });
-  </script>
+</script>
 {% endblock %}
 
 
@@ -154,6 +128,14 @@
   </ul>
 {% endif %}{% endif %}
 {% endblock %}
+
+{% comment %} ########################################################## {% endcomment %}
+{% comment %} ########################################################## {% endcomment %}
+{% comment %} ########################################################## {% endcomment %}
+
+{% comment %} ########################################################## {% endcomment %}
+{% comment %} ########################################################## {% endcomment %}
+{% comment %} ########################################################## {% endcomment %}
 
 
 

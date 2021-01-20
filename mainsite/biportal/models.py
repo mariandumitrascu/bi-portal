@@ -157,21 +157,10 @@ class Snippet(models.Model):
         )
 
     # @property
-    # def image_cropped_preview(self):
-    #     if self.image_cropped:
-    #         _image_cropped = get_thumbnail(self.thumbnail,
-    #                             #    '300x300',
-    #                                upscale=False,
-    #                                crop=False,
-    #                                quality=100)
-    #         return format_html('<img src="{}" width="{}" height="{}">'.format(
-    #             _image_cropped.url, _image_cropped.width, _image_cropped.height)
-    #             )
-    #     return ""
-
-    # @property
     def render_button(self):
-        html = '<input type="submit" value="Render report" name="_render_report" id=button_render_report>'
+        html = """
+        <input type="submit" value="Render report" name="_render_report" id=button_render_report>
+        <input type="submit" value="Test button" name="_render_report_test" id=button_render_report_test onClick='alert();return 0;'>"""
         return mark_safe(html)
 
     render_button.short_description = ''
