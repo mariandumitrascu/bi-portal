@@ -1,0 +1,4 @@
+./mainsite/mainsite/__pycache__/*
+./mainsite/biportal/__pycache__/*
+*.pyc
+*.pyc
