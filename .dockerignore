@@ -1,4 +1,9 @@
-./mainsite/mainsite/__pycache__/*
-./mainsite/biportal/__pycache__/*
-*.pyc
-*.pyc
+
+./mainsite/.ebextensions*
+./mainsite/.elasticbeanstalk*
+
+# these are created anyway if we run the dev server
+*/__pycache__/*
+*/*/__pycache__/*
+*/*/*/__pycache__/*
+

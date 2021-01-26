@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    labels:
+        app: guardian-grrf
+    name: guardian-grrf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: guardian-grrf
+  template:
+    metadata:
+      labels:
+        app: guardian-grrf
+    spec:
+      containers:
+      - image: guardiandev/grrf:latest
+        imagePullPolicy: Always
+        name: guardian-grrf

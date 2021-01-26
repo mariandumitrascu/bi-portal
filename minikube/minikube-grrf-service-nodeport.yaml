@@ -1,0 +1,25 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: guardian-grrf
+  namespace: default
+  labels:
+    app: guardian-grrf
+  managedFields:
+    - manager: kubectl-expose
+      # operation: Update
+      apiVersion: v1
+spec:
+  ports:
+    - protocol: TCP
+      port: 8888
+      targetPort: 8888
+      # nodePort: 32602
+  selector:
+    app: guardian-grrf
+  # clusterIP: 10.107.61.63
+  # clusterIPs:
+  #   - 10.107.61.63
+  type: NodePort
+  sessionAffinity: None
+  externalTrafficPolicy: Cluster

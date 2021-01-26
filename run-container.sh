@@ -15,14 +15,14 @@ docker run -it  \
 
 ##########################################################################################
 
-docker run -it  \
+docker run -itd  \
     --name guardian-grrf \
     -p 8888:8888 \
     --rm \
     guardian/grrf:002
 
 
-docker exec -it guardian-grrf bash
+docker exec -it guardian-grrf ls ./
 
 
 python manage.py runserver 8888

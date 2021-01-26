@@ -29,7 +29,10 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    '0.0.0.0'
+    '0.0.0.0',
+    '192.168.99.100',
+    '192.168.99.101',
+    'guardian-grrf.local',
     ]
 
 
