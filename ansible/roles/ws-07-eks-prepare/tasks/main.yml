@@ -1,0 +1,98 @@
+---
+# tasks file for ws-07-eks-prepare
+
+############################################################################################################
+# tag the subnets
+- set_fact:
+    tmp_private_subnets: "{{ eks_private_subnets | replace(',',' ') }}"
+    tmp_public_subnets: "{{ eks_public_subnets | replace(',',' ') }}"
+
+- name: set tags for private subnets to be used by eks alb
+  shell: "aws ec2 create-tags \
+  --resources {{tmp_private_subnets}} \
+  --tags Key=kubernetes.io/role/internal-elb,Value=1"
+  register: shell_response
+
+- debug:
+    msg: "{{shell_response}}"
+
+- name: set tags for public subnets to be used by eks alb
+  shell: "aws ec2 create-tags \
+  --resources {{tmp_public_subnets}} \
+  --tags Key=kubernetes.io/role/elb,Value=1"
+  register: shell_response
+
+- debug:
+    msg: "{{shell_response}}"
+############################################################################################################
+# install metrics server
+- name: install metrics server
+  k8s:
+    state: present
+    src: "{{role_path}}/files/metrics-server-0.3.6/{{item}}"
+    wait: no
+  loop:
+    - aggregated-metrics-reader.yaml
+    - auth-reader.yaml
+    - metrics-server-deployment.yaml
+    - resource-reader.yaml
+    - auth-delegator.yaml
+    - metrics-apiservice.yaml
+    - metrics-server-service.yaml
+  register: k8s_result
+
+- debug:
+    msg: "{{ k8s_result }}"
+
+############################################################################################################
+# install dashboard
+- name: install kubernetes dashboard
+  k8s:
+    state: present
+    src: "{{role_path}}/files/kubernetes-dashboard/{{item}}"
+    wait: no
+  loop:
+    - eks-admin-service-account.yaml
+    - recommended.yaml
+  register: k8s_result
+
+- debug:
+    msg: "{{ k8s_result }}"
+
+############################################################################################################
+# install cluster autoscaler
+- name: install cluster autoscaller
+  k8s:
+    state: present
+    definition: "{{ lookup('template', role_path + '/files/autoscaler/cluster-autoscaler-autodiscover.yaml') }}"
+    wait: no
+    wait_timeout: 600
+  register: k8s_result
+
+- debug:
+    msg: "{{ k8s_result }}"
+
+############################################################################################################
+# install eks alb ingress server
+- name: install rbac role for eks alb ingress
+  k8s:
+    state: present
+    src: "{{role_path}}/files/ingress-eks-alb/rbac-role.yaml"
+    wait: no
+    wait_timeout: 600
+  register: k8s_result
+
+- debug:
+    msg: "{{ k8s_result }}"
+
+- name: install eks alb ingress server
+  k8s:
+    state: present
+    definition: "{{ lookup('template', role_path + '/files/ingress-eks-alb/alb-ingress-controller.yaml') }}"
+    wait: no
+    wait_timeout: 600
+  register: k8s_result
+
+- debug:
+    msg: "{{ k8s_result }}"
+

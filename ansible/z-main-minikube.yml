@@ -1,0 +1,88 @@
+---
+- hosts: localhost
+  vars:
+
+    - deployment_env: minik
+    - application_name: guardian-grrf
+
+    - project_repo: "git@gitlab.tceh.net:adm/weather-import-service.git"
+    - project_version: develop
+
+    - aws_account: "868024899531"
+    - aws_region: us-east-2
+
+    - vpc_name: cts-{{deployment_env}}-{{application_name}}-vpc-02
+    - sg_name: cts-{{deployment_env}}-{{application_name}}-sg-02
+    - sg_cidr: "0.0.0.0/0"
+
+    - VpcId: vpc-04583eeaaac308059
+
+    - eks_cluster_name: "cts-{{deployment_env}}-{{application_name}}-eks-cluster-03"
+    - eks_nodegroup_name: "cts-{{deployment_env}}-{{application_name}}-eks-ng-03"
+    - eks_instance_type: "t3.large"
+
+    # this gets overwriten by VPC creation
+    - eks_public_subnets: "subnet-0be071bf50ad2aee6,subnet-002d557e1b2c6db9b,subnet-0fa808293f99295db"
+    - eks_private_subnets: "subnet-01747a9730d177c4b,subnet-02bb448f61df34f9f,subnet-05ee6041a2513a6a6"
+    - subnets_used: "{{eks_public_subnets}}"
+
+    - db_allocated_storage: 200
+    - db_instance_class: db.m4.xlarge
+    - db_instance_identifier: cts-{{ deployment_env }}-{{ application_name }}-rds-02
+    - db_name: "vistra_wx_db"
+    - db_engine_version: "11.4"
+    - db_port: "5432"
+    - db_subnet_group_name: cts-{{deployment_env}}-{{application_name}}-sng-02 # this will be created
+    - db_master_username: redshiftmaster # will go to secret
+    - db_master_user_password: sqlpower # will go to secret
+    - db_is_public: "True"
+
+    # this gets overwriten by VPC creation
+    - db_security_group: sg-0ed9ab22e849f52f6
+    # this is overwriten during  02-postgres-create role execution
+    - db_endpoint: "192.168.86.41"
+
+    - ecr_private_repository: False
+    - ecr_repository_name: "vistra-guardian-grrf"
+    # this is overwriten during 04-repository-create role execution
+    - ecr_repository_uri: "dataquadrant/vistra-guardian-grrf"
+    - container_version: "1.0.27"
+
+    - eks_type: minikube
+    - eks_namespace: "weather-services"
+
+    # this is used in case load balancer for guardian-grrf app needs to be internal
+    - WX_annotation: ""
+
+    # veriables specific to weather services
+    - WX_API: "71c0ed8bcc9c4fb380ed8bcc9c0fb3a0" # will go to secret
+    - WX_HISTORICAL_BASEURL: "http://cleanedobservations.wsi.com/CleanedObs.svc/GetObs"
+    - WX_HISTORICAL_APIKEY: "3b54f801d0e02701e3e70bef69727933" # will go to secret
+
+    - WX_STATION_SIZE_1h: 100
+    - WX_REPLICAS_1h: 3
+
+    - WX_STATION_SIZE_2d: 50
+    - WX_REPLICAS_2d: 5
+
+    - WX_STATION_SIZE_15d: 14
+    - WX_REPLICAS_15d: 17
+
+  vars_files:
+    - ./tags.yml
+
+  remote_user: root
+  roles:
+      #- ws-00-vpc-create
+      #- ws-00-vpc-sg
+      #- ws-01-eks-create
+      #- ws-02-postgres-create
+      #- ws-02-postgres-tags
+      - ws-03-postgres-data
+      #- ws-04-repository-create
+      - ws-05-container
+      - ws-06-secrets
+      - ws-07-eks-setup
+      # - ws-08-elb-tags
+
+  handlers:

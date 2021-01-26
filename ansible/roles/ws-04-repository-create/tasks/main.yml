@@ -1,0 +1,35 @@
+---
+# tasks file for repository-create
+
+########################################################
+- block:
+  - name: start dokerd if is not already started
+    shell: "sudo service docker start"
+    register: shell_result
+    ignore_errors: yes
+
+  - debug:
+      msg: "{{ shell_result }}"
+  when: startdocker is defined and startdocker == 1
+#######################################################
+
+
+- name: create ECR repository for container
+  ecs_ecr: 
+    name: "{{ecr_repository_name}}"
+    registry_id: "{{aws_account}}"
+    region: "{{aws_region}}"
+    state: present
+  register: ecr_result
+
+- name: show results
+  debug:
+    msg: "{{ecr_result}}"
+
+- name: capture repository uri
+  set_fact: 
+    ecr_repository_uri: "{{ ecr_result.repository.repositoryUri }}"
+
+- name: show repository uri
+  debug:
+    msg: "{{ecr_repository_uri}}"

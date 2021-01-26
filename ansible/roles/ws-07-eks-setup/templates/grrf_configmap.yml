@@ -1,0 +1,30 @@
+---
+
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  name: "vistra-{{deployment_env_short}}-weather-api-configmap"
+  namespace: "{{eks_namespace}}"
+  labels:
+    app: "vistra-{{deployment_env_short}}-weather-api"
+data:
+  # Configuration values can be set as key-value properties
+  WX_BOOTSTRAP: 'api'
+  WX_DEV_ENV: 'no' # or 'yes'
+  config.env: |
+    DATABASE_TYPE="postgres"
+    DATABASE_HOST="{{db_endpoint}}"
+    DATABASE_PORT="{{db_port}}"
+    DATABASE_SCHEMA="{{db_name}}"
+    WX_HISTORICAL_BASEURL="{{WX_HISTORICAL_BASEURL}}"
+
+    # set the logging level for python apps
+    # CRITICAL = 50
+    # FATAL = CRITICAL
+    # ERROR = 40
+    # WARNING = 30
+    # WARN = WARNING
+    # INFO = 20
+    # DEBUG = 10
+    # NOTSET = 0
+    LOGLEVEL={{ WS_LOGLEVEL }}

@@ -105,6 +105,8 @@ kubectl delete -f minikube/minikube-grrf-ingress.yaml
 
 kubectl get ingress
 
+http://a7672b6438e4145eaa2d248910da463c-809992092.us-east-1.elb.amazonaws.com:8888/
+
 
 
 

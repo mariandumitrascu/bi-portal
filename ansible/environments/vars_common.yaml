@@ -1,0 +1,10 @@
+
+  # project_repo: "git@gitlab.tceh.net:adm/weather-import-service.git"
+  project_repo: "git@gitlab.tceh.net:adm/enterprise-analytics-platform/weather-services.git"
+  project_version: develop
+
+######################################################
+  container_version: "1.0.51"                        #
+######################################################
+
+

@@ -1,0 +1,60 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: "vistra-{{deployment_env_short}}-weather-api"
+  namespace: "{{eks_namespace}}"
+spec:
+  selector:
+    matchLabels:
+      app: "vistra-{{deployment_env_short}}-weather-api"
+  # replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "vistra-{{deployment_env_short}}-weather-api"
+    spec:
+      containers:
+      - name: "vistra-{{deployment_env_short}}-weather-api"
+        image: "{{ecr_repository_uri}}:{{container_version}}"
+        imagePullPolicy: Always #change to always  in deployment
+        ports:
+          - containerPort: 80
+        env:
+          - name: WX_HISTORICAL_APIKEY
+            valueFrom:
+              secretKeyRef:
+                name: vistra-guardian-grrf-secrets
+                key: WX_HISTORICAL_APIKEY
+          - name: DATABASE_USER
+            valueFrom:
+              secretKeyRef:
+                name: vistra-guardian-grrf-secrets
+                key: db_master_username
+          - name: DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: vistra-guardian-grrf-secrets
+                key: db_master_user_password
+        envFrom:
+          - configMapRef:
+              name: "vistra-{{deployment_env_short}}-weather-api-configmap"
+        command: [ "/bin/sh"]
+        args: ["bootstrap.sh"]
+        volumeMounts:
+          - name: config-volume
+            mountPath: /app/config.env
+            subPath: config.env
+        resources: #allocating per pod resource could vary over time
+          requests:
+            memory: 100Mi
+            cpu: 50m
+          limits:
+            memory: 200Mi
+            cpu: 200m
+
+      volumes:
+        - name: config-volume
+          configMap:
+            name: "vistra-{{deployment_env_short}}-weather-api-configmap"
+
+
