@@ -12,7 +12,7 @@
 #     path: "{{role_path}}/files/project"
 #     state: directory
 
-# - name: clone weather svc repo
+# - name: clone the app
 #   git:
 #     repo: "{{project_repo}}"
 #     dest: "{{role_path}}/files/project"
@@ -48,7 +48,7 @@
       register: container_result
 
   ####################
-  when: not ecr_private_repository 
+  when: not ecr_private_repository
 
 - block:
   ####################
@@ -74,12 +74,7 @@
         state: present
       register: container_result
 
-      ####################################################################
-      # MD: placeholder for invoking twistlock to scan the image
 
-
-      ####################################################################
-      
   ####################
   when: ecr_private_repository
 
@@ -89,4 +84,3 @@
     msg: "{{container_result}}"
 
 
-    

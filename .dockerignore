@@ -1,6 +1,12 @@
 
+./.devcontainer*
+./.vscode*
 ./mainsite/.ebextensions*
 ./mainsite/.elasticbeanstalk*
+./ansible*
+./env*
+./minikube*
+./temp*
 
 # these are created anyway if we run the dev server
 */__pycache__/*

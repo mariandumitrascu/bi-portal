@@ -20,7 +20,6 @@
     - grrf_deployment.yml
     - grrf_service.yml
 
-
 - name: set the cluster for kubectl
   shell: "aws eks --region {{aws_region}} update-kubeconfig --name {{eks_cluster_name}}"
   when: eks_type == "eks"
@@ -33,16 +32,7 @@
     state: present
     wait: yes
 
-
-- name: remove previous daemonset of weather rest api
-  k8s:
-    kind: DaemonSet
-    state: absent
-    namespace: "{{eks_namespace}}"
-    name: "vistra-{{deployment_env_short}}-weather-api"
-    wait: yes
-
-# - name: remove previous service of weather rest api
+# - name: remove previous service
 #   k8s:
 #     kind: Service
 #     state: absent
@@ -61,14 +51,14 @@
     - grrf_configmap.yml
     - grrf_deployment.yml
 
-- shell: export TOKENNAME="kubectl  -n kube-system get serviceaccount/eks-admin -o jsonpath='{.secrets[0].name}'"
-- shell: export TOKEN="kubectl -n kube-system get secret $TOKENNAME -o jsonpath='{.data.token}' | base64 --decode "
+# - shell: export TOKENNAME="kubectl  -n kube-system get serviceaccount/eks-admin -o jsonpath='{.secrets[0].name}'"
+# - shell: export TOKEN="kubectl -n kube-system get secret $TOKENNAME -o jsonpath='{.data.token}' | base64 --decode "
 
-- shell: echo $TOKEN
-  register: shell_result
+# - shell: echo $TOKEN
+#   register: shell_result
 
-- debug:
-    msg: "{{ shell_result.stdout }}"
+# - debug:
+#     msg: "{{ shell_result.stdout }}"
 
 - name: clean config files
   file:
