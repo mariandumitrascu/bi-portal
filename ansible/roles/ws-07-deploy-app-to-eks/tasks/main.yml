@@ -16,7 +16,7 @@
     src: "{{role_path}}/templates/{{item}}"
     dest: "{{role_path}}/files/{{deployment_env_short}}/{{item}}"
   loop:
-    - grrf_configmap.yml
+    # - grrf_configmap.yml
     - grrf_deployment.yml
     - grrf_service.yml
 
@@ -37,8 +37,16 @@
 #     kind: Service
 #     state: absent
 #     namespace: "{{eks_namespace}}"
-#     name: "vistra-{{deployment_env_short}}-weather-api"
+#     name: "guardian-grrf"
 #     wait: yes
+
+- name: remove previous deployment
+  k8s:
+    kind: Deployment
+    state: absent
+    namespace: "{{eks_namespace}}"
+    name: "guardian-grrf"
+    wait: yes
 
 - name: deploy
   k8s:
@@ -47,18 +55,10 @@
     wait: no
     wait_timeout: 600
   loop:
-    - grrf_service.yml
-    - grrf_configmap.yml
     - grrf_deployment.yml
+    - grrf_service.yml
+    # - grrf_configmap.yml
 
-# - shell: export TOKENNAME="kubectl  -n kube-system get serviceaccount/eks-admin -o jsonpath='{.secrets[0].name}'"
-# - shell: export TOKEN="kubectl -n kube-system get secret $TOKENNAME -o jsonpath='{.data.token}' | base64 --decode "
-
-# - shell: echo $TOKEN
-#   register: shell_result
-
-# - debug:
-#     msg: "{{ shell_result.stdout }}"
 
 - name: clean config files
   file:

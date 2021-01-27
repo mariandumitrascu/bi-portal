@@ -1,0 +1,37 @@
+---
+# tasks file for container
+
+- block:
+  ####################
+    - name: login to the ECR
+      shell: $( aws ecr get-login --no-include-email --region={{aws_region}} --registry-ids {{aws_account}})
+      register: login_result
+
+    - name: ECR login result
+      debug:
+        msg: "{{login_result}}"
+
+    - name: build the image and push it to repository
+      docker_image:
+        build:
+          # path: "{{role_path}}/files/project/"
+          path: "{{role_path}}/../../../"
+          dockerfile: docker/Dockerfile
+          pull: no
+        name: "{{ecr_repository_uri}}"
+        tag: "{{container_version}}"
+        push: yes
+        source: build
+        state: present
+      register: container_result
+
+
+  ####################
+  when: ecr_private_repository
+
+
+- name: container image build result
+  debug:
+    msg: "{{container_result}}"
+
+

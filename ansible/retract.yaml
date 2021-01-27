@@ -21,7 +21,7 @@
 
   tasks:
     - include_vars: "./environments/vars_common.yaml"                            # common vars same in all environments
-    - include_vars: "./environments/{{ deployment_env }}/vars-app.yml"        # variables specific to guardian grrf
+    - include_vars: "./environments/{{ deployment_env }}/vars-app.yaml"        # variables specific to guardian grrf
 
     # - block:
 #######################################################################################################

@@ -102,12 +102,37 @@ kubectl delete deployment guardian-grrf
 kubectl apply -f minikube/minikube-grrf-ingress.yaml
 kubectl delete -f minikube/minikube-grrf-ingress.yaml
 
-
 kubectl get ingress
 
-# http://a7672b6438e4145eaa2d248910da463c-809992092.us-east-1.elb.amazonaws.com:8888/
+
+###################################################################################
+###################################################################################
+###################################################################################
+# deploy to eks
+kubectl apply -f minikube/minikube-grrf-deployment.yaml
+kubectl apply -f minikube/minikube-grrf-service-loadbalancer.yaml
+
+# retract
+kubectl delete -f minikube/minikube-grrf-service-loadbalancer.yaml
+kubectl delete -f minikube/minikube-grrf-deployment.yaml
+
+# last url for grrf
+# http://abd2d9e2306d34575a973c83f54681ec-1238323399.us-east-1.elb.amazonaws.com/
+
+####################################################################################
+####################################################################################
+####################################################################################
+# connect to kubernetes dashboard
+# reference:
+# https://docs.aws.amazon.com/eks/latest/userguide/dashboard-tutorial.html
+kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep eks-admin | awk '{print $1}')
+kubectl proxy
+
+# To access the dashboard endpoint:
+# http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#!/login.
 
 
 
+eyJhbGciOiJSUzI1NiIsImtpZCI6IklzbmlMQjVsN3lEYmktWHZ6RjlpQ2NFUWwtMkppWl9SYzVHcHJsOU0zZzAifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJla3MtYWRtaW4tdG9rZW4taDJjYjciLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZWtzLWFkbWluIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiMWNjM2E3NmEtMjJkZS00MDM5LWI0YmEtYjNkY2UyODM4MzBmIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmVrcy1hZG1pbiJ9.aQ-QeVUCmyE1ql448L1BBBxVZT1njeYSHYJvVxD8WvoOgWAQS0pa8iBl4RWcD28rPiDX-_-pKAcfOaB4h_i839fAhwvTZLr80Ja0aC-cRc-8w-RB1s8AtdgGTkLdpZhXUIwfnrBOM3LwncBr3mcetRwVwBH2lbuMIgHZWc38qE6gyi1ktUYyzF8T7J8m9IxC3CNQ_PbZPEEWflULFWU9Pr4luyBKitVbqwG4cv2PTGlJfpaQylSv686nypapEBsVJpRA2lLuCGjZAn78ZFXTkNCuqAJ-vNJHZyVRNHERArKUlEckHR-ibJu56T3EtUk84W5ompcLLiC2On-MQB3MzA
 
 

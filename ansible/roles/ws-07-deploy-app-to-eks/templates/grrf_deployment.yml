@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    labels:
+        app: guardian-grrf
+    name: guardian-grrf
+    namespace: "{{eks_namespace}}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: guardian-grrf
+  template:
+    metadata:
+      labels:
+        app: guardian-grrf
+    spec:
+      containers:
+      # - image: guardiandev/grrf:latest
+      - image: "{{ecr_repository_uri}}:{{container_version}}"
+        imagePullPolicy: Always
+        name: guardian-grrf

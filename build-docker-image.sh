@@ -17,15 +17,15 @@ docker build -t guardian/grrf -f docker/Dockerfile  --no-cache .
 
 # authenticate
 docker login --username=dataquadrant
-
-docker logout
-
 docker login --username=guardiandev
-#
+docker logout
 
 docker tag 5bb24b5bf4a2 guardiandev/grrf:001
 docker push guardiandev/grrf:001
 
+# ##############################################################
+# ##############################################################
+# ##############################################################
 # build docker image and push to repo, start to finish
 docker build -t guardian/grrf -f docker/Dockerfile  --no-cache .
 DIMAGE=guardian/grrf
@@ -34,5 +34,8 @@ echo $IMAGEID
 
 docker tag ${IMAGEID} guardiandev/grrf:latest
 docker push guardiandev/grrf:latest
+# ##############################################################
+# ##############################################################
+# ##############################################################
 
 

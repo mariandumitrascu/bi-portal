@@ -1,10 +1,9 @@
 
-  # project_repo: "git@gitlab.tceh.net:adm/weather-import-service.git"
-  project_repo: "git@gitlab.tceh.net:adm/enterprise-analytics-platform/weather-services.git"
-  project_version: develop
+  project_repo: "https://github.com/mariandumitrascu/bi-portal.git"
+  project_version: main
 
 ######################################################
-  container_version: "1.0.51"                        #
+  container_version: "1.0.2"                        #
 ######################################################
 
 

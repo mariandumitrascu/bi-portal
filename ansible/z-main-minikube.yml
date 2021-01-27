@@ -78,7 +78,6 @@
       #- ws-01-eks-create
       #- ws-02-postgres-create
       #- ws-02-postgres-tags
-      - ws-03-postgres-data
       #- ws-04-repository-create
       - ws-05-container
       - ws-06-secrets

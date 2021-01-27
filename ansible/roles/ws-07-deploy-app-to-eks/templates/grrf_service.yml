@@ -1,0 +1,24 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: guardian-grrf
+  namespace: "{{eks_namespace}}"
+  labels:
+    app: guardian-grrf
+spec:
+  ports:
+    - protocol: TCP
+      # port: 8888
+      port: 80
+      targetPort: 8888
+      # nodePort: 32602
+  selector:
+    app: guardian-grrf
+  # clusterIP: 10.107.61.63
+  # clusterIPs:
+  #   - 10.107.61.63
+  # reference: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
+  type: LoadBalancer
+  sessionAffinity: None
+  externalTrafficPolicy: Cluster
+

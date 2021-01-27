@@ -21,7 +21,7 @@
   #   ignore_errors: yes
 
   - name: delete the EKS
-    shell: "eksctl delete cluster -f '{{ playbook_dir }}/roles/ws-01-eks-create/files/{{deployment_env_short}}/cluster-config.yaml'"
+    shell: "eksctl delete cluster -f '{{ playbook_dir }}/roles/ws-01-create-eks-cluster/files/{{deployment_env_short}}/cluster-config.yaml'"
     register: eks_result
     ignore_errors: yes
 
@@ -33,7 +33,7 @@
     cloudformation:
       stack_name: "{{sg_name}}"
       state: "absent"
-      template: "{{ playbook_dir }}/roles/ws-00-vpc-sg/files/vpc-security-group.yaml"
+      template: "{{ playbook_dir }}/roles/ws-00-create-security-group/files/vpc-security-group.yaml"
       template_parameters:
         VpcId: "{{VpcId}}"
       tags:
@@ -46,7 +46,7 @@
       stack_name: "{{vpc_name}}"
       state: "absent"
       region: "{{aws_region}}"
-      template: "{{ playbook_dir }}/roles/ws-00-vpc-create/templates/vpc-3azs.yaml"
+      template: "{{ playbook_dir }}/roles/ws-00-create-vpc/templates/vpc-3azs.yaml"
       template_parameters:
         ClassB: 67
       tags:

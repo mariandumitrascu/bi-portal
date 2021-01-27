@@ -34,6 +34,7 @@ ALLOWED_HOSTS = [
     '192.168.99.101',
     'guardian-grrf.local',
     'a7672b6438e4145eaa2d248910da463c-809992092.us-east-1.elb.amazonaws.com',
+    '*',
     ]
 
 

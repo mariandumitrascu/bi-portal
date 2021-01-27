@@ -13,7 +13,6 @@
 
   VpcId: vpc-04583eeaaac308059
 
-
   # reference:
   # https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html
   eks_version: "1.18"
@@ -27,7 +26,7 @@
   eks_private_subnets: "subnet-01747a9730d177c4b,subnet-02bb448f61df34f9f,subnet-05ee6041a2513a6a6"
   subnets_used: "{{ eks_public_subnets }}"
   eks_type: eks
-  eks_namespace: "weather-services"
+  eks_namespace: "guardian-embedded-analytics"
 
     # this is used in case load balancer for guardian-grrf app needs to be internal
   eks_elb_annotation: ""
@@ -51,9 +50,9 @@
 
   ecr_private_repository: True
   ecr_repository_name: "cts-{{ deployment_env }}-{{ application_name }}"
+
   # this is overwriten during 04-repository-create role execution
   ecr_repository_uri: "{{ aws_account }}.dkr.ecr.{{ aws_region }}.amazonaws.com/{{ ecr_repository_name }}"
-  # container_version: "1.0.35" # moved to vars_common.yaml
 
   # set the logging level for python apps
   # CRITICAL = 50
