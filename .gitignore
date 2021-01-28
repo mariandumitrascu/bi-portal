@@ -274,9 +274,6 @@ ansible/roles/ws-00-vpc-sg/files/vpc-security-group.yaml
 **/vpc_info.json
 **/vpc-security-group.yaml
 
-
-
-
-
 _commands.sh
 ansible/environments/non-prod/z_extra-vars.yml
+ansible/roles/ws-01-create-eks-cluster/files/*

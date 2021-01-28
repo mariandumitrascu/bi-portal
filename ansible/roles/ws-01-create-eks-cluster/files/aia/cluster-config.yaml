@@ -14,23 +14,23 @@ metadata:
 #   serviceRoleARN: "arn:aws:iam::733224590010:role/datalake.NonProd.dleks.svcrole"
 
 vpc:
-  id: "vpc-0328702b06bc3eb97"
+  id: "vpc-03823625e8831bd94"
   # cidr: "152.28.0.0/16"
   subnets:
     public:
       us-east-1a:
-          id: "subnet-097c67ac146292725"
+          id: "subnet-0595c6c0334d66730"
       us-east-1b:
-          id: "subnet-0d4e0b0317af417df"
+          id: "subnet-0474f304e12dac0bf"
       us-east-1c:
-          id: "subnet-094302024e0359488"
+          id: "subnet-0218eb217df991e23"
     private:
       us-east-1a:
-          id: "subnet-0b3e7f07a9ed556f5"
+          id: "subnet-0df3eeef6c7ce1c32"
       us-east-1b:
-          id: "subnet-03b8486071f714a29"
+          id: "subnet-00bec3176b68f4fef"
       us-east-1c:
-          id: "subnet-051a03e9e5e8b6a7a"
+          id: "subnet-0128248c6d1fdcc5b"
 
 nodeGroups:
   - name: cts-aia-guardian-grrf-eks-ng-01

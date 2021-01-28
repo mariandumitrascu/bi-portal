@@ -7,13 +7,6 @@
 # ansible-playbook main.yaml -e "deployment_env=non-prod"                                            #
 # ansible-playbook main.yaml -e "deployment_env=prod"                                                #
 #                                                                                                   #
-# other options:                                                                                    #
-#                                                                                                   #
-# ansible-playbook main.yaml -e "deployment_env=non-prod nocyberark=1 nodataload=1"                  #
-# ansible-playbook main.yaml -e "deployment_env=prod nocyberark=1 nodataload=1"                      #
-# ansible-playbook main.yaml -e "deployment_env=aia nocyberark=1 nodataload=1"                      #
-# ansible-playbook main.yaml -e "deployment_env=aia nocyberark=1"                                   #
-#                                                                                                   #
 #####################################################################################################
 
 - hosts: localhost
