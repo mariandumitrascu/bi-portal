@@ -269,4 +269,4 @@ python manage.py findstatic admin/css/base.css
 
 #
 
-eksctl create cluster -f /Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/ansible/roles/ws-01-eks-create/files/aia/cluster-config.yaml
+eksctl create cluster -f /Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/ansible-eks/roles/ws-01-eks-create/files/aia/cluster-config.yaml

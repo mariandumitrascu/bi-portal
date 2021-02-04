@@ -260,12 +260,12 @@ prod*
 *.pptx
 
 
-ansible/roles/ws-05-container/files/*
-ansible/roles/ws-05-container/files/project/*
-ansible/roles/ws-06-eks-setup/files/*
-ansible/roles/ws-01-eks-create/files/*
-ansible/roles/ws-06-secrets/files/*
-ansible/roles/ws-00-vpc-sg/files/vpc-security-group.yaml
+ansible-eks/roles/ws-05-container/files/*
+ansible-eks/roles/ws-05-container/files/project/*
+ansible-eks/roles/ws-06-eks-setup/files/*
+ansible-eks/roles/ws-01-eks-create/files/*
+ansible-eks/roles/ws-06-secrets/files/*
+ansible-eks/roles/ws-00-vpc-sg/files/vpc-security-group.yaml
 *.tar.gz
 **/files/project/**
 
@@ -275,5 +275,5 @@ ansible/roles/ws-00-vpc-sg/files/vpc-security-group.yaml
 **/vpc-security-group.yaml
 
 # _commands.sh
-ansible/environments/non-prod/z_extra-vars.yml
-ansible/roles/ws-01-create-eks-cluster/files/*
+ansible-eks/environments/non-prod/z_extra-vars.yml
+ansible-eks/roles/ws-01-create-eks-cluster/files/*
