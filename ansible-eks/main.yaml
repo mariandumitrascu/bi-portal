@@ -21,19 +21,30 @@
 
     # - block:
 #######################################################################################################
-    - name: execute guardian grrf specific roles
-      include_role:
-        name: "{{role_item}}"
-      loop:
-        - ws-00-create-vpc                                  # executed only if execute_vpc_create is defined
-        - ws-00-create-security-group                       # executed only if execute_vpc_sg is defined
-        - ws-01-create-eks-cluster                          # executed only if execute_eks_create is defined
-        - ws-04-create-ecr-repository
-        - ws-05-build-app-container
-        - ws-07-deploy-eks-addons
-        - ws-07-deploy-app-to-eks
-      loop_control:
-        loop_var: role_item
+
+    #####################################################
+    # get account id and register as variable
+    - name: get account id from aws cli caller identity
+      shell: "aws sts get-caller-identity --query Account --output text"
+      register: account_id_shell_response
+
+    - set_fact:
+        aws_account: '{{account_id_shell_response.stdout}}'
+
+
+    # - name: execute guardian grrf specific roles
+    #   include_role:
+    #     name: "{{role_item}}"
+    #   loop:
+    #     - ws-00-create-vpc                                  # executed only if execute_vpc_create is defined
+    #     - ws-00-create-security-group                       # executed only if execute_vpc_sg is defined
+    #     - ws-01-create-eks-cluster                          # executed only if execute_eks_create is defined
+    #     - ws-04-create-ecr-repository
+    #     - ws-05-build-app-container
+    #     - ws-07-deploy-eks-addons
+    #     - ws-07-deploy-app-to-eks
+    #   loop_control:
+    #     loop_var: role_item
 #######################################################################################################
       # always:
 #######################################################################################################

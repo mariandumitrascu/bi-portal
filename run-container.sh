@@ -19,7 +19,13 @@ docker run -itd  \
     --name guardian-grrf \
     -p 8888:8888 \
     --rm \
-    guardian/grrf:002
+    guardian/grrf:latest
+
+docker run -itd  \
+    --name guardian-grrf \
+    -p 80:80 \
+    --rm \
+    guardian/grrf:80
 
 
 docker exec -it guardian-grrf ls ./

@@ -39,3 +39,20 @@ docker push guardiandev/grrf:latest
 # ##############################################################
 
 
+# ##############################################################
+# ##############################################################
+# ##############################################################
+# build docker image and push to repo, start to finish
+docker build -t guardian/grrf:80 -f docker/Dockerfile-80  .
+docker build -t guardian/grrf:80 -f docker/Dockerfile-80  --no-cache .
+DIMAGE=guardian/grrf
+IMAGEID=$( docker images -q ${DIMAGE}:80 )
+echo $IMAGEID
+
+docker tag ${IMAGEID} guardiandev/grrf:80
+docker push guardiandev/grrf:80
+# ##############################################################
+# ##############################################################
+# ##############################################################
+
+

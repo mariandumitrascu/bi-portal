@@ -1,3 +1,6 @@
+# this file contains a collection of bash commands used during the research and development of the project
+# it should not be executed
+
 
 # reference:
 # https://aws.amazon.com/blogs/devops/build-and-deploy-a-federated-web-identity-application-with-aws-elastic-beanstalk-and-login-with-amazon/
@@ -261,12 +264,24 @@ eb deploy
 
 docker build -f /Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/.devcontainer/Dockerfile -t vsc-bi-portal-aaa9b47b59e44357bcb22ae8d6b29645 --build-arg VARIANT=3.8 --build-arg INSTALL_NODE=false
 
-
 python manage.py findstatic admin/css/base.css
 
+################################################################################################
+# quick commands for deployments:
 
+ansible-playbook ansible-eks/main.yaml
+ansible-playbook ansible-eks/retract.yaml
 
+ansible-playbook ansible-ec2/main.yaml
+ansible-playbook ansible-ec2/retract.yaml
 
-#
+# #############################################################################################
+# interact with the ec2
+# ec2-54-159-159-10.compute-1.amazonaws.com
 
-eksctl create cluster -f /Users/marian.dumitrascu/Dropbox/Work/Current/python-cms/bi-portal/ansible-eks/roles/ws-01-eks-create/files/aia/cluster-config.yaml
+export ec2=ec2-54-159-159-10.compute-1.amazonaws.com
+echo $ec2
+ssh -i ~/.ssh/id_rsa ec2-user@$ec2
+
+ssh -i ~/.ssh/id_rsa ec2-user@ec2-54-159-159-10.compute-1.amazonaws.com
+ssh ec2-user@ec2-54-159-159-10.compute-1.amazonaws.com

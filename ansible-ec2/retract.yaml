@@ -1,0 +1,41 @@
+#####################################################################################################
+#
+# Usage:
+#
+# ansible-playbook main.yaml -e "deployment_env=aabg"
+# ansible-playbook main.yaml -e "deployment_env=non-prod"                                            #
+# ansible-playbook main.yaml -e "deployment_env=prod"
+#
+# ansible-playbook main.yaml -e "deployment_env=aabg nocyberark=1"                                   #
+# ansible-playbook main.yaml -e "deployment_env=non-prod nocyberark=1"                               #
+# ansible-playbook main.yaml -e "deployment_env=prod nocyberark=1"                                   #
+#
+# other options:
+#
+# ansible-playbook main.yaml -e "deployment_env=non-prod nocyberark=1 nodataload=1"                  #
+# ansible-playbook main.yaml -e "deployment_env=prod nocyberark=1 nodataload=1"                      #
+# ansible-playbook main.yaml -e "deployment_env=aabg nocyberark=1 nodataload=1"                      #
+# ansible-playbook main.yaml -e "deployment_env=aabg nocyberark=1"                                   #
+#
+#####################################################################################################
+
+- hosts: localhost
+  remote_user: root
+
+  vars:
+    - deployment_env: aia      # must be overwritten with an inline variable. eg: ... -e "deployment_env=non-prod"
+
+  tasks:
+
+    - include_vars: "./environments/vars_common.yaml"                    # common vars same in all environments
+    - include_vars: "./environments/{{ deployment_env }}/vars-app.yaml"   # variables specific to guardian grrf
+
+#######################################################################################################
+    - name: execute playbook roles
+      include_role:
+        name: "{{role_item}}"
+      loop:
+        - 100-retract-ec2
+      loop_control:
+        loop_var: role_item
+#######################################################################################################

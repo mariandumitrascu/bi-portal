@@ -13,25 +13,13 @@
 
   VpcId: vpc-04583eeaaac308059
 
-  # reference:
-  # https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html
-  eks_version: "1.18"
-  eks_cluster_name: "cts-{{ deployment_env }}-{{ application_name}}-eks-cluster-01"
-  eks_nodegroup_name: "cts-{{ deployment_env }}-{{ application_name }}-eks-ng-01"
-  eks_instance_type: "t2.xlarge" # "c4.2xlarge" # m5a.xlarge
-  eks_config_postfix: "-aia"
-
-  # this gets overwriten by VPC creation
-  eks_public_subnets: "subnet-0be071bf50ad2aee6,subnet-002d557e1b2c6db9b,subnet-0fa808293f99295db"
-  eks_private_subnets: "subnet-01747a9730d177c4b,subnet-02bb448f61df34f9f,subnet-05ee6041a2513a6a6"
-  subnets_used: "{{ eks_public_subnets }}"
-  eks_type: eks
-  eks_namespace: "guardian-embedded-analytics"
-
-    # this is used in case load balancer for guardian-grrf app needs to be internal
-  eks_elb_annotation: ""
-  eks_alb_annotation: "alb.ingress.kubernetes.io/scheme: internet-facing"
-  eks_alb_domain_name: "weather-services-aia.com"
+  ec2_idempotent_id: idempotent-id-25
+  # ec2_image: ami-082bb518441d3954c
+  ec2_image: ami-064d8dbbcc5ded164
+  ec2_instance_type: c5.xlarge
+  ec2_name: cts-{{ deployment_env }}-{{ application_name }}-ec2
+  ec2_volume_type: gp2
+  ec2_volume_size: 120
 
   db_allocated_storage: 200
   db_instance_class: db.m4.xlarge
@@ -56,6 +44,5 @@
 
   execute_vpc_create: 1
   execute_vpc_sg: 1
-  execute_eks_create: 1
   execute_postgres_create: 1
   nodataload: 1

@@ -1,0 +1,64 @@
+#####################################################################################################
+#
+# Usage:
+#
+# ansible-playbook main.yaml -e "deployment_env=aabg"
+# ansible-playbook main.yaml -e "deployment_env=non-prod"                                            #
+# ansible-playbook main.yaml -e "deployment_env=prod"
+#
+# ansible-playbook main.yaml -e "deployment_env=aabg nocyberark=1"                                   #
+# ansible-playbook main.yaml -e "deployment_env=non-prod nocyberark=1"                               #
+# ansible-playbook main.yaml -e "deployment_env=prod nocyberark=1"                                   #
+#
+# other options:
+#
+# ansible-playbook main.yaml -e "deployment_env=non-prod nocyberark=1 nodataload=1"                  #
+# ansible-playbook main.yaml -e "deployment_env=prod nocyberark=1 nodataload=1"                      #
+# ansible-playbook main.yaml -e "deployment_env=aabg nocyberark=1 nodataload=1"                      #
+# ansible-playbook main.yaml -e "deployment_env=aabg nocyberark=1"                                   #
+#
+#####################################################################################################
+
+- hosts: localhost
+  remote_user: root
+
+  vars:
+    - deployment_env: aia      # must be overwritten with an inline variable. eg: ... -e "deployment_env=non-prod"
+
+
+  tasks:
+
+    - include_vars: "./environments/vars_common.yaml"                    # common vars same in all environments
+    - include_vars: "./environments/{{ deployment_env }}/vars-app.yaml"   # variables specific to guardian grrf
+
+
+#######################################################################################################
+    # get account id and register as variable
+    - name: get account id from aws cli caller identity
+      shell: "aws sts get-caller-identity --query Account --output text"
+      register: account_id_shell_response
+
+    - set_fact:
+        aws_account: '{{account_id_shell_response.stdout}}'
+
+    - debug:
+        msg: "{{ aws_account }}"
+
+    - name: create ec2 instance(s)
+      include_role:
+        name: 010-create-ec2
+
+#######################################################################################################
+
+- name: configure instance(s)
+  hosts: md-ec2-lab-hosts
+  remote_user: ec2-user
+  gather_facts: True
+  vars:
+    - deployment_env: aia      # must be overwritten with an inline variable. eg: ... -e "deployment_env=non-prod"
+
+  tasks:
+
+    - name: configure ec2 instance(s)
+      include_role:
+        name: 020-config-ec2

@@ -1,0 +1,9 @@
+
+  project_repo: "https://github.com/mariandumitrascu/bi-portal.git"
+  project_version: main
+
+######################################################
+  container_version: "1.0.2"                        #
+######################################################
+
+

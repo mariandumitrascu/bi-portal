@@ -1,0 +1,34 @@
+---
+# tasks file for config-ec2
+- include_vars: "{{ playbook_dir }}/environments/vars_common.yaml"                    # common vars same in all environments
+- include_vars: "{{ playbook_dir }}/environments/{{ deployment_env }}/vars-app.yaml"   # variables specific to guardian grrf
+
+
+- include_vars:
+    file: "{{ role_path }}/../../ec2_info.json"
+    name: ec2_info
+
+- name: ec2 configuration block
+  become_user: root
+  become: yes
+  become_method: sudo
+  block:
+
+  - name: upgrade all packages
+    yum:
+      name: '*'
+      state: latest
+
+  # - name: install git, mc, amazon-efs-utils, sshfs, nano, NetworkManager, bind-utils
+  #   yum:
+  #     name: mc
+  #     state: present
+
+  - name:  start GRRF container
+    # shell: docker run -itd --name guardian-grrf --restart always -p 80:8888 guardiandev/grrf:latest
+    shell: docker run -itd --name guardian-grrf -p 80:8888 --rm guardiandev/grrf:latest
+    # ignore_errors: yes
+
+
+# block end
+######################################################################################
