@@ -683,6 +683,7 @@ class BipageAdmin(admin.ModelAdmin):
         # context.update({'is_nav_sidebar_enabled': False})
         context.update({'show_presentation_nav': True})
         return super().render_change_form(request, context, *args, **kwargs)
+        
 
     def response_post_save_change(self, request, obj):
         """ Custom actiaons for bi page

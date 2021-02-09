@@ -1,0 +1,109 @@
+---
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Create EC2 instance'
+
+# Metadata:
+
+# Parameters:
+
+Resources:
+
+  ec2grrfIamRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+
+  ec2grrfIamInstanceProfile:
+    Type: 'AWS::IAM::InstanceProfile'
+    Properties:
+      Path: /
+      Roles:
+        - Ref: ec2grrfIamRole
+
+  ec2grrfIamRolePolicies:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: ec2grrfIam
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'ecr:*'
+              - 'cloudtrail:LookupEvents'
+            Resource: '*'
+          - Effect: Allow
+            Action:
+              - 'iam:CreateServiceLinkedRole'
+            Resource: '*'
+            Condition:
+              StringEquals:
+                'iam:AWSServiceName':
+                  - replication.ecr.amazonaws.com
+      Roles:
+        - Ref: ec2grrfIamRole
+
+##################################################################################################################
+
+  ec2grrfSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ec2 grrf security group
+      GroupName: grrf_ec2_group
+      VpcId: {{ vpc_info.stack_outputs.VPC }}
+      SecurityGroupIngress:
+        -
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        -
+          IpProtocol: tcp
+          FromPort: 8888
+          ToPort: 8888
+          CidrIp: 0.0.0.0/0
+        -
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: {{ sg_cidr }}
+
+##################################################################################################################
+
+  Ec2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName: "{{ ec2_key_name }}"
+      SecurityGroupIds:
+      - !Ref ec2grrfSecurityGroup
+      InstanceType: {{ ec2_instance_type }}
+      ImageId: {{ ec2_image }}
+      SubnetId: {{ vpc_info.stack_outputs.SubnetCPublic }}
+      IamInstanceProfile:
+        Ref: ec2grrfIamInstanceProfile
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeType: {{ ec2_volume_type }}
+            VolumeSize: {{ ec2_volume_size }}
+            DeleteOnTermination: 'true'
+            Encrypted: 'true'
+      Tags:
+        -
+          Key: Name
+          Value: {{ ec2_name }}
+
+Outputs:
+  Ec2InstanceId:
+    Description: 'EC2 instance.'
+    Value: !Ref Ec2Instance
+    Export:
+      Name: !Sub '${AWS::StackName}-Ec2Instance'

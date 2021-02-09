@@ -1,0 +1,132 @@
+---
+# tasks file for create-ec2
+
+  - name: create a vpc with 6 subnets, in 3 az, public and private
+    cloudformation:
+      stack_name: "{{vpc_name}}"
+      state: "present"
+      region: "{{aws_region}}"
+      template: "{{role_path}}/templates/vpc-3azs.yaml"
+      template_parameters:
+        ClassB: 69
+      tags:
+        Name: "ansible-cloudformation-vpc"
+    register: vpc_info
+
+  - name: show vpc stack result
+    debug:
+      msg: "{{ vpc_info.stack_outputs }}"
+
+  - name: save VPC info to a file
+    copy:
+      content: "{{ vpc_info.stack_outputs | to_nice_json }}"
+      dest: "{{ role_path }}/../../vpc_info.json"
+
+  - name: capture VpcId and subnets
+    set_fact:
+      ec2_public_subnets: "{{ vpc_info.stack_outputs.SubnetsPublic }}"
+      ec2_private_subnets: "{{ vpc_info.stack_outputs.SubnetsPrivate }}"
+      VpcId: "{{vpc_info.stack_outputs.VPC}}"
+
+  - name: create key pair using key_material obtained using 'file' lookup plugin
+    ec2_key:
+      name: id_rsa
+      key_material: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+################################################################################################################
+# create security groups
+
+  - name: create a security group for ec2
+    ec2_group:
+      name: "{{ sg_name }}"
+      description: ec2 security group
+      region: "{{ aws_region }}"
+      vpc_id: "{{ vpc_info.stack_outputs.VPC }}"
+      rules:
+        # open ssh port
+        - proto: tcp
+          from_port: 22
+          to_port: 22
+          cidr_ip: "{{ sg_cidr }}"
+        - proto: tcp
+          from_port: 8888
+          to_port: 8888
+          cidr_ip: "{{ sg_cidr }}"
+        - proto: tcp
+          from_port: 80
+          to_port: 80
+          cidr_ip: "{{ sg_cidr }}"
+      rules_egress:
+        - proto: all
+          cidr_ip: 0.0.0.0/0
+      tags:
+        Name: "{{ sg_name }}"
+    register: sg_ec2_info
+
+  - name: save sg ec2 info to a file
+    copy:
+      content: "{{ sg_ec2_info | to_nice_json }}"
+      dest: "{{ role_path }}/../../sg_ec2_info.json"
+
+  - debug:
+      msg: "{{ sg_ec2_info }}"
+
+
+################################################################################################################
+# create ec2 instance
+
+  - name: create ec2 instance using ec2 module
+    ec2:
+      id: "{{ ec2_idempotent_id }}"
+      region: "{{ aws_region }}"
+      key_name: id_rsa
+      instance_type: "{{ ec2_instance_type }}"
+      image: "{{ ec2_image }}"
+      wait: yes
+      wait_timeout: "500"
+      volumes:
+        - device_name: /dev/xvda
+          volume_type: "{{ ec2_volume_type }}"
+          volume_size: "{{ ec2_volume_size }}"
+          delete_on_termination: yes
+      vpc_subnet_id: "{{ vpc_info.stack_outputs.SubnetCPublic }}"
+      assign_public_ip: yes
+      state: present
+      group_id: "{{ sg_ec2_info.group_id }}"
+      instance_tags:
+        Name: "{{ ec2_name }}"
+    register: ec2_info
+
+  - debug:
+      msg: "{{ ec2_info }}"
+
+  - name: save ec2 info to a file
+    copy:
+      content: "{{ ec2_info | to_nice_json }}"
+      dest: "{{ role_path }}/../../ec2_info.json"
+
+############################################################################################################
+# prepare ec2 host to be abble to connect to it with ansible
+
+  - name: add new instance to host group
+    add_host:
+      hostname: "{{ item.public_ip }}"
+      groupname: md-ec2-lab-hosts
+    with_items: '{{ec2_info.instances}}'
+
+
+  - name: wait for SSH to come up
+    wait_for:
+      host: "{{ item.public_dns_name }}"
+      port: 22
+      # delay: 60
+      # timeout: 320
+      state: started
+    with_items: '{{ec2_info.instances}}'
+    # become_user: root
+    # become: yes
+    # become_method: sudo
+    register: waitfor
+
+  - debug:
+      msg: "{{ waitfor }}"

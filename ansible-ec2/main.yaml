@@ -31,9 +31,6 @@
     - include_vars: "./environments/vars_common.yaml"                    # common vars same in all environments
     - include_vars: "./environments/{{ deployment_env }}/vars-app.yaml"   # variables specific to guardian grrf
 
-
-#######################################################################################################
-    # get account id and register as variable
     - name: get account id from aws cli caller identity
       shell: "aws sts get-caller-identity --query Account --output text"
       register: account_id_shell_response
@@ -41,14 +38,18 @@
     - set_fact:
         aws_account: '{{account_id_shell_response.stdout}}'
 
-    - debug:
-        msg: "{{ aws_account }}"
+    - name: build app container
+      include_role:
+        name: 015-build-app-container
 
     - name: create ec2 instance(s)
       include_role:
         name: 010-create-ec2
 
 #######################################################################################################
+#######################################################################################################
+#######################################################################################################
+# here we change the host, some variables need to be redefined
 
 - name: configure instance(s)
   hosts: md-ec2-lab-hosts
@@ -62,3 +63,8 @@
     - name: configure ec2 instance(s)
       include_role:
         name: 020-config-ec2
+
+#######################################################################################################
+#######################################################################################################
+#######################################################################################################
+

@@ -3,7 +3,7 @@
 
 
 - include_vars:
-    file: "{{ role_path }}/../../ec2_info.json"
+    file: "{{ role_path }}/../../environments/{{ deployment_env }}/ec2_info.json"
     name: ec2_info
 
 - debug:
@@ -12,37 +12,18 @@
 - debug:
     msg: "{{ ec2_info.instances | map(attribute='id') | list }}"
 
-- name: terminate the ec2 instance
-  ec2:
-    instance_ids: "{{ ec2_info.instances | map(attribute='id') | list }}"
+- name: remove ec2 stack
+  cloudformation:
+    stack_name: "{{ ec2_stack_name }}"
+    state: "absent"
     region: "{{ aws_region }}"
-    wait: yes
-    wait_timeout: "500"
-    state: absent
 
 ################################################################################################################
-
-- include_vars:
-    file: "{{ role_path }}/../../sg_ec2_info.json"
-    name: sg_ec2_info
-
-- name: delete ec2 security group
-  ec2_group:
-    group_id: "{{ sg_ec2_info.group_id }}"
-    state: absent
-  ignore_errors: yes
-
 
 - name: delete the vpc
   cloudformation:
     stack_name: "{{vpc_name}}"
     state: "absent"
-    region: "{{aws_region}}"
-    template: "{{ playbook_dir }}/roles/010-create-ec2/templates/vpc-3azs.yaml"
-    template_parameters:
-      ClassB: 67
-    tags:
-      Name: "ansible-cloudformation-vpc"
   register: vpc_result
   ignore_errors: yes
 

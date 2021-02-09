@@ -279,9 +279,13 @@ ansible-playbook ansible-ec2/retract.yaml
 # interact with the ec2
 # ec2-54-159-159-10.compute-1.amazonaws.com
 
-export ec2=ec2-54-159-159-10.compute-1.amazonaws.com
+export ec2-18-234-57-99.compute-1.amazonaws.com
 echo $ec2
 ssh -i ~/.ssh/id_rsa ec2-user@$ec2
 
-ssh -i ~/.ssh/id_rsa ec2-user@ec2-54-159-159-10.compute-1.amazonaws.com
+ssh -i ~/.ssh/id_rsa ec2-user@ec2-34-204-70-23.compute-1.amazonaws.com
 ssh ec2-user@ec2-54-159-159-10.compute-1.amazonaws.com
+
+# commands that should run on the ec2 after is launched
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 156021229203.dkr.ecr.us-east-1.amazonaws.com
+docker run -itd --name guardian-grrf -p 80:8888 --rm '156021229203.dkr.ecr.us-east-1.amazonaws.com/cts-aia-guardian-grrf:1.0.3'

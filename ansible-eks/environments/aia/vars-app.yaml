@@ -52,6 +52,7 @@
   ecr_repository_name: "cts-{{ deployment_env }}-{{ application_name }}"
 
   # this is overwriten during 04-repository-create role execution
+  # 156021229203.dkr.ecr.us-east-1.amazonaws.com/cts-aia-guardian-grrf:1.0.2
   ecr_repository_uri: "{{ aws_account }}.dkr.ecr.{{ aws_region }}.amazonaws.com/{{ ecr_repository_name }}"
 
   execute_vpc_create: 1
