@@ -15,17 +15,17 @@
                 {
                     "device_name": "/dev/xvda",
                     "ebs": {
-                        "attach_time": "2021-02-05T21:03:12+00:00",
+                        "attach_time": "2021-02-10T18:26:06+00:00",
                         "delete_on_termination": true,
                         "status": "attached",
-                        "volume_id": "vol-04da66412bc21881d"
+                        "volume_id": "vol-08173ef7115b79455"
                     }
                 }
             ],
             "capacity_reservation_specification": {
                 "capacity_reservation_preference": "open"
             },
-            "client_token": "cts-a-Ec2In-1MDZAQKEP3DCB",
+            "client_token": "cts-a-Ec2In-1562WEFCJENTC",
             "cpu_options": {
                 "core_count": 2,
                 "threads_per_core": 1
@@ -37,14 +37,14 @@
             },
             "hypervisor": "xen",
             "iam_instance_profile": {
-                "arn": "arn:aws:iam::156021229203:instance-profile/cts-aia-guardian-grrf-ec2-01-ec2grrfIamInstanceProfile-195AE5QH8D919",
-                "id": "AIPASIU4XA2J566RYFTG2"
+                "arn": "arn:aws:iam::156021229203:instance-profile/cts-aia-guardian-grrf-ec2-01-ec2grrfIamInstanceProfile-1W0S8RZHYMSLR",
+                "id": "AIPASIU4XA2J5SBK5NKUK"
             },
             "image_id": "ami-064d8dbbcc5ded164",
-            "instance_id": "i-0a0d45a33d6204bea",
+            "instance_id": "i-07ec3e0a7bb296c15",
             "instance_type": "t2.medium",
             "key_name": "id_rsa",
-            "launch_time": "2021-02-05T21:03:11+00:00",
+            "launch_time": "2021-02-10T18:26:05+00:00",
             "metadata_options": {
                 "http_endpoint": "enabled",
                 "http_put_response_hop_limit": 1,
@@ -58,12 +58,12 @@
                 {
                     "association": {
                         "ip_owner_id": "amazon",
-                        "public_dns_name": "ec2-54-91-242-67.compute-1.amazonaws.com",
-                        "public_ip": "54.91.242.67"
+                        "public_dns_name": "ec2-54-237-246-60.compute-1.amazonaws.com",
+                        "public_ip": "54.237.246.60"
                     },
                     "attachment": {
-                        "attach_time": "2021-02-05T21:03:11+00:00",
-                        "attachment_id": "eni-attach-0f68ad99d9083ed70",
+                        "attach_time": "2021-02-10T18:26:05+00:00",
+                        "attachment_id": "eni-attach-0f705161e3969c751",
                         "delete_on_termination": true,
                         "device_index": 0,
                         "status": "attached"
@@ -71,33 +71,33 @@
                     "description": "",
                     "groups": [
                         {
-                            "group_id": "sg-0959fbe6030a5638e",
+                            "group_id": "sg-026208189ccfe1d7c",
                             "group_name": "grrf_ec2_group"
                         }
                     ],
                     "interface_type": "interface",
                     "ipv6_addresses": [],
-                    "mac_address": "0e:b8:e3:cd:e0:d3",
-                    "network_interface_id": "eni-01bbac9fc16212a13",
+                    "mac_address": "0e:09:79:90:b8:8f",
+                    "network_interface_id": "eni-0c69cec595212d0f0",
                     "owner_id": "156021229203",
-                    "private_dns_name": "ip-10-69-69-74.ec2.internal",
-                    "private_ip_address": "10.69.69.74",
+                    "private_dns_name": "ip-10-69-71-111.ec2.internal",
+                    "private_ip_address": "10.69.71.111",
                     "private_ip_addresses": [
                         {
                             "association": {
                                 "ip_owner_id": "amazon",
-                                "public_dns_name": "ec2-54-91-242-67.compute-1.amazonaws.com",
-                                "public_ip": "54.91.242.67"
+                                "public_dns_name": "ec2-54-237-246-60.compute-1.amazonaws.com",
+                                "public_ip": "54.237.246.60"
                             },
                             "primary": true,
-                            "private_dns_name": "ip-10-69-69-74.ec2.internal",
-                            "private_ip_address": "10.69.69.74"
+                            "private_dns_name": "ip-10-69-71-111.ec2.internal",
+                            "private_ip_address": "10.69.71.111"
                         }
                     ],
                     "source_dest_check": true,
                     "status": "in-use",
-                    "subnet_id": "subnet-089f14a634824844a",
-                    "vpc_id": "vpc-007cf9d717a30c457"
+                    "subnet_id": "subnet-0929fee31f78c3936",
+                    "vpc_id": "vpc-0aed127187497dcc8"
                 }
             ],
             "placement": {
@@ -105,16 +105,16 @@
                 "group_name": "",
                 "tenancy": "default"
             },
-            "private_dns_name": "ip-10-69-69-74.ec2.internal",
-            "private_ip_address": "10.69.69.74",
+            "private_dns_name": "ip-10-69-71-111.ec2.internal",
+            "private_ip_address": "10.69.71.111",
             "product_codes": [],
-            "public_dns_name": "ec2-54-91-242-67.compute-1.amazonaws.com",
-            "public_ip_address": "54.91.242.67",
+            "public_dns_name": "ec2-54-237-246-60.compute-1.amazonaws.com",
+            "public_ip_address": "54.237.246.60",
             "root_device_name": "/dev/xvda",
             "root_device_type": "ebs",
             "security_groups": [
                 {
-                    "group_id": "sg-0959fbe6030a5638e",
+                    "group_id": "sg-026208189ccfe1d7c",
                     "group_name": "grrf_ec2_group"
                 }
             ],
@@ -124,15 +124,15 @@
                 "name": "running"
             },
             "state_transition_reason": "",
-            "subnet_id": "subnet-089f14a634824844a",
+            "subnet_id": "subnet-0929fee31f78c3936",
             "tags": {
                 "Name": "cts-aia-guardian-grrf-ec2",
                 "aws:cloudformation:logical-id": "Ec2Instance",
-                "aws:cloudformation:stack-id": "arn:aws:cloudformation:us-east-1:156021229203:stack/cts-aia-guardian-grrf-ec2-01/3820bc50-67f5-11eb-a847-0a8082d84415",
+                "aws:cloudformation:stack-id": "arn:aws:cloudformation:us-east-1:156021229203:stack/cts-aia-guardian-grrf-ec2-01/18b7ab90-6bcd-11eb-9cb6-0ea1b88f1a89",
                 "aws:cloudformation:stack-name": "cts-aia-guardian-grrf-ec2-01"
             },
             "virtualization_type": "hvm",
-            "vpc_id": "vpc-007cf9d717a30c457"
+            "vpc_id": "vpc-0aed127187497dcc8"
         }
     ]
 }

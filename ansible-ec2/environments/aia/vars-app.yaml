@@ -23,6 +23,8 @@
   ec2_key_name: id_rsa
   ec2_instance_id: "" # will be overwitten/filled by create-ec2 role
 
+  elb_url: ""
+
   db_allocated_storage: 200
   db_instance_class: db.m4.xlarge
   db_instance_identifier: cts-{{ deployment_env }}-{{ application_name }}-rds-08

@@ -37,10 +37,10 @@
     # shell: docker run -itd --name guardian-grrf -p 80:8888 --rm guardiandev/grrf:latest
     shell: docker run -itd --name guardian-grrf -p 80:8888 --rm {{ ecr_repository_uri }}:{{ container_version }}
 
-  - name: show the address of the application
-    ansible.builtin.debug:
-      msg: "Guardian GRRF app should be running at: http://{{ item.public_dns_name }}"
-    with_items: "{{ec2_info.instances}}"
+  # - name: show the address of the application
+  #   ansible.builtin.debug:
+  #     msg: "Guardian GRRF app should be running at: http://{{ item.public_dns_name }}"
+  #   with_items: "{{ec2_info.instances}}"
 
 
 # block end

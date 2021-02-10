@@ -55,7 +55,7 @@ Resources:
     Properties:
       GroupDescription: ec2 grrf security group
       GroupName: grrf_ec2_group
-      VpcId: vpc-007cf9d717a30c457
+      VpcId: vpc-0aed127187497dcc8
       SecurityGroupIngress:
         -
           IpProtocol: tcp
@@ -74,7 +74,8 @@ Resources:
           CidrIp: 98.199.0.0/16
 
 ##################################################################################################################
-
+# reference
+# https://s3-us-west-1.amazonaws.com/cloudformation-templates-us-west-1/ELBSample.template
   Ec2Instance:
     Type: AWS::EC2::Instance
     Properties:
@@ -83,7 +84,7 @@ Resources:
       - !Ref ec2grrfSecurityGroup
       InstanceType: t2.medium
       ImageId: ami-064d8dbbcc5ded164
-      SubnetId: subnet-089f14a634824844a
+      SubnetId: subnet-0929fee31f78c3936
       IamInstanceProfile:
         Ref: ec2grrfIamInstanceProfile
       BlockDeviceMappings:
@@ -123,18 +124,48 @@ Resources:
   #       Interval: '30'
   #       Timeout: '5'
 
+  # reference:
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-elb.html#cfn-ec2-elb-subnets
+  ElasticLoadBalancer:
+    Type: 'AWS::ElasticLoadBalancing::LoadBalancer'
+    Properties:
+      # AvailabilityZones:
+      # - 'us-east-1c'
+      #   # 'Fn::GetAZs': ''
+      Instances:
+        - Ref: Ec2Instance
+      Listeners:
+        - LoadBalancerPort: '80'
+          InstancePort: '80'
+          Protocol: HTTP
+      Subnets:
+        - 'subnet-0929fee31f78c3936'
+      SecurityGroups:
+        - Ref: ec2grrfSecurityGroup
+      HealthCheck:
+        Target:
+          'Fn::Join':
+            - ''
+            - - 'HTTP:'
+              - '80'
+              - /
+        HealthyThreshold: '3'
+        UnhealthyThreshold: '5'
+        Interval: '30'
+        Timeout: '5'
+
 Outputs:
   Ec2InstanceId:
     Description: 'EC2 instance.'
     Value: !Ref Ec2Instance
     Export:
       Name: !Sub '${AWS::StackName}-Ec2Instance'
-  # URL:
-  #   Description: URL of the sample website
-  #   Value:
-  #     'Fn::Join':
-  #       - ''
-  #       - - 'http://'
-  #         - 'Fn::GetAtt':
-  #             - ElasticLoadBalancer
-  #             - DNSName
+  URL:
+    Description: URL of the sample website
+    Value:
+      'Fn::Join':
+        - ''
+        - - 'http://'
+          - 'Fn::GetAtt':
+              - ElasticLoadBalancer
+              - DNSName
